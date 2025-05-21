@@ -6,18 +6,11 @@
       <form @submit.prevent="handleSubmit" class="flex flex-col md:flex-row gap-4 items-center mb-2">
         <div class="flex-1 w-full">
           <label class="block text-gray-200 font-semibold mb-1">Medicine Name</label>
-          <input 
-            v-model="formData.name"
-            class="w-full bg-[#232a2f] border border-[#6fa3d9] rounded px-3 py-2 text-gray-200" 
-            type="text"
-            required
-          />
+          <input v-model="formData.name"
+            class="w-full bg-[#232a2f] border border-[#6fa3d9] rounded px-3 py-2 text-gray-200" type="text" required />
         </div>
-        <button 
-          type="submit" 
-          class="bg-[#3973a5] text-white px-8 py-2 rounded mt-6 md:mt-0 disabled:opacity-50"
-          :disabled="loading"
-        >
+        <button type="submit" class="bg-[#3973a5] text-white px-8 py-2 rounded mt-6 md:mt-0 disabled:opacity-50"
+          :disabled="loading">
           {{ loading ? 'Saving...' : 'Save' }}
         </button>
       </form>
@@ -27,7 +20,7 @@
       <div class="text-lg text-gray-200 font-semibold mb-4">All Medicines</div>
       <div class="mb-4 flex flex-wrap gap-2">
         <button class="bg-gray-600 text-white px-3 py-1 rounded text-sm">Copy</button>
-        <button class="bg-gray-600 text-white px-3 py-1 rounded text-sm">CSV</button>
+        <button class="bg-gray-600  text-white px-3 py-1 rounded text-sm">CSV</button>
         <button class="bg-gray-600 text-white px-3 py-1 rounded text-sm">Excel</button>
         <button class="bg-gray-600 text-white px-3 py-1 rounded text-sm">PDF</button>
         <button class="bg-gray-600 text-white px-3 py-1 rounded text-sm">Print</button>
@@ -48,16 +41,10 @@
               <td class="px-3 py-2">{{ medicine.name }}</td>
               <td class="px-3 py-2">
                 <div class="flex gap-2">
-                  <button 
-                    @click="openEditModal(medicine)"
-                    class="bg-[#3973a5] text-white rounded p-1"
-                  >
+                  <button @click="openEditModal(medicine)" class="bg-[#3973a5] text-white rounded p-1">
                     <span class="material-icons text-base">edit</span>
                   </button>
-                  <button 
-                    @click="removeMedicine(medicine)"
-                    class="bg-red-500 text-white rounded p-1"
-                  >
+                  <button @click="removeMedicine(medicine)" class="bg-red-500 text-white rounded p-1">
                     <span class="material-icons text-base">delete</span>
                   </button>
                 </div>
@@ -88,27 +75,17 @@
         <form @submit.prevent="handleEdit" class="space-y-4">
           <div>
             <label class="block text-gray-200 font-semibold mb-1">Medicine Name</label>
-            <input 
-              v-model="editForm.name"
-              class="w-full bg-[#232a2f] border border-[#6fa3d9] rounded px-3 py-2 text-gray-200" 
-              type="text"
-              required
-            />
+            <input v-model="editForm.name"
+              class="w-full bg-[#232a2f] border border-[#6fa3d9] rounded px-3 py-2 text-gray-200" type="text"
+              required />
           </div>
           <div v-if="editError" class="text-red-500 text-sm">{{ editError }}</div>
           <div class="flex justify-end gap-2 mt-6">
-            <button 
-              type="button"
-              @click="closeEditModal"
-              class="bg-gray-600 text-white px-6 py-2 rounded"
-            >
+            <button type="button" @click="closeEditModal" class="bg-gray-600 text-white px-6 py-2 rounded">
               Cancel
             </button>
-            <button 
-              type="submit"
-              class="bg-[#3973a5] text-white px-6 py-2 rounded disabled:opacity-50"
-              :disabled="editLoading"
-            >
+            <button type="submit" class="bg-[#3973a5] text-white px-6 py-2 rounded disabled:opacity-50"
+              :disabled="editLoading">
               {{ editLoading ? 'Saving...' : 'Save Changes' }}
             </button>
           </div>
@@ -127,16 +104,10 @@
         </div>
         <p class="text-gray-200 mb-6">Are you sure you want to delete this medicine? This action cannot be undone.</p>
         <div class="flex justify-end gap-2">
-          <button 
-            @click="cancelDelete"
-            class="bg-gray-600 text-white px-6 py-2 rounded"
-          >
+          <button @click="cancelDelete" class="bg-gray-600 text-white px-6 py-2 rounded">
             Cancel
           </button>
-          <button 
-            @click="confirmDelete"
-            class="bg-red-500 text-white px-6 py-2 rounded"
-          >
+          <button @click="confirmDelete" class="bg-red-500 text-white px-6 py-2 rounded">
             Delete
           </button>
         </div>
@@ -306,4 +277,9 @@ onMounted(() => {
 
 <style scoped>
 @import url('https://fonts.googleapis.com/icon?family=Material+Icons');
+
+
+.bg-red {
+  background-color: red;
+}
 </style> 

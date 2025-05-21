@@ -160,7 +160,7 @@ table {
   background: #232a2f;
 }
 thead th {
-  background: #3973a5;
+  background: #800000;
   color: #fff;
   font-weight: 600;
   padding: 8px 0;
@@ -176,7 +176,7 @@ tbody td {
   margin-top: 18px;
 }
 .save-btn {
-  background: #3973a5;
+  background: #800000;
   color: #fff;
   border: none;
   border-radius: 3px;

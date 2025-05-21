@@ -1,13 +1,13 @@
 <template>
   <section class="p-8">
     <h2 class="text-3xl text-gray-200 mb-6 font-semibold">Patient History</h2>
-    <div class="bg-[#232a2f] rounded-md shadow-md mb-10 p-6 border-t-4 border-[#3973a5]">
+    <div class="bg-[#232a2f] rounded-md shadow-md mb-10 p-6 border-t-4 border-[#800000]">
       <div class="text-lg text-gray-200 font-semibold mb-4">Search Patient History</div>
       <form class="mb-6">
         <div class="flex flex-col md:flex-row gap-4 items-center">
           <select 
             v-model="selectedPatient"
-            class="w-full md:w-1/3 bg-[#232a2f] border border-[#6fa3d9] rounded px-3 py-2 text-gray-200"
+            class="w-full md:w-1/3 bg-[#232a2f] border border-[#FFB81C] rounded px-3 py-2 text-gray-200"
           >
             <option value="">Select Patient</option>
             <option 
@@ -20,7 +20,7 @@
           </select>
           <button 
             type="button" 
-            class="bg-[#3973a5] text-white px-8 py-2 rounded"
+            class="bg-[#800000] text-white px-8 py-2 rounded"
             @click="searchPatientHistory"
             :disabled="!selectedPatient"
           >

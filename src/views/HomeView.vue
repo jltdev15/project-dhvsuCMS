@@ -36,26 +36,27 @@ const handleLogout = async () => {
 <template>
   <div class="flex h-screen bg-[#454c53]">
     <!-- Sidebar -->
-    <aside class="w-[250px] bg-[#111315] text-white flex flex-col">
-      <div class="flex flex-col items-center border-b border-[#222] py-5">
-        <div class="text-2xl font-bold text-[#6cb2f7] tracking-wider">DHVSU</div>
+    <aside class="w-[250px] bg-[#800000] text-white flex flex-col">
+      <div class="flex flex-col items-center border-b border-[#FFB81C] py-5">
+        <div class="text-2xl font-bold text-[#FFB81C] tracking-wider">DHVSU</div>
         <div class="flex items-center mt-2">
-          <div class="text-4xl mr-2">
+          <div class="text-4xl mr-2 text-[#FFB81C]">
             <span class="material-icons">{{ currentUser?.photoURL ? 'account_circle' : 'account_circle' }}</span>
           </div>
-          <div class="text-base">{{ displayName }}</div>
+          <div class="text-base text-[#FFB81C]">{{ displayName }}</div>
         </div>
       </div>
       <nav class="flex-1 mt-5">
         <ul class="space-y-1">
           <li>
-            <router-link to="/" class="flex items-center px-8 py-3 rounded-md text-white hover:bg-[#2d3238] transition-all sidebar-link"
-              :class="{ 'bg-[#2d3238]': route.path === '/' }">
+            <router-link to="/"
+              class="flex items-center px-8 py-3 rounded-md text-white hover:bg-[#FFB81C] hover:text-[#800000] transition-all sidebar-link"
+              :class="{ 'bg-[#FFB81C] text-[#800000]': route.path === '/' }">
               <span class="material-icons mr-4">dashboard</span> Dashboard
             </router-link>
           </li>
           <li @click="patientsOpen = !patientsOpen"
-            :class="[{'bg-[#4a90e2] text-white': isPatientsMenuActive, 'bg-[#2d3238]': patientsOpen && !isPatientsMenuActive}, 'rounded-md mx-2 transition-all cursor-pointer flex items-center px-8 py-3']">
+            :class="[{'bg-[#FFB81C] text-[#800000]': isPatientsMenuActive, 'hover:bg-[#FFB81C] hover:text-[#800000]': patientsOpen && !isPatientsMenuActive}, 'rounded-md mx-2 transition-all cursor-pointer flex items-center px-8 py-3']">
             <span class="material-icons mr-4">person</span> Patients
             <span class="material-icons ml-auto">{{ patientsOpen ? 'expand_less' : 'expand_more' }}</span>
           </li>
@@ -64,34 +65,34 @@ const handleLogout = async () => {
               <li>
                 <router-link to="/new-prescription"
                   class="flex items-center w-full px-4 py-2 rounded-md transition-all submenu-link"
-                  :class="isNewPrescriptionActive ? 'bg-[#e5e8ed] text-[#222] font-semibold' : 'text-[#bfc4cb] hover:text-white hover:bg-[#23272b]'">
+                  :class="isNewPrescriptionActive ? 'bg-[#FFB81C] text-[#800000] font-semibold' : 'text-white hover:text-[#800000] hover:bg-[#FFB81C]'">
                   <span class="material-icons submenu-icon mr-3"
-                    :class="isNewPrescriptionActive ? 'text-[#222]' : ''">radio_button_unchecked</span>
+                    :class="isNewPrescriptionActive ? 'text-[#800000]' : ''">radio_button_unchecked</span>
                   New Prescription
                 </router-link>
               </li>
               <li>
                 <router-link to="/add-patient"
                   class="flex items-center w-full px-4 py-2 rounded-md transition-all submenu-link"
-                  :class="isAddPatientActive ? 'bg-[#e5e8ed] text-[#222] font-semibold' : 'text-[#bfc4cb] hover:text-white hover:bg-[#23272b]'">
+                  :class="isAddPatientActive ? 'bg-[#FFB81C] text-[#800000] font-semibold' : 'text-white hover:text-[#800000] hover:bg-[#FFB81C]'">
                   <span class="material-icons submenu-icon mr-3"
-                    :class="isAddPatientActive ? 'text-[#222]' : ''">radio_button_unchecked</span>
+                    :class="isAddPatientActive ? 'text-[#800000]' : ''">radio_button_unchecked</span>
                   Add Patients
                 </router-link>
               </li>
               <li>
                 <router-link to="/patient-history"
                   class="flex items-center w-full px-4 py-2 rounded-md transition-all submenu-link"
-                  :class="isPatientHistoryActive ? 'bg-[#e5e8ed] text-[#222] font-semibold' : 'text-[#bfc4cb] hover:text-white hover:bg-[#23272b]'">
+                  :class="isPatientHistoryActive ? 'bg-[#FFB81C] text-[#800000] font-semibold' : 'text-white hover:text-[#800000] hover:bg-[#FFB81C]'">
                   <span class="material-icons submenu-icon mr-3"
-                    :class="isPatientHistoryActive ? 'text-[#222]' : ''">radio_button_unchecked</span>
+                    :class="isPatientHistoryActive ? 'text-[#800000]' : ''">radio_button_unchecked</span>
                   Patient History
                 </router-link>
               </li>
             </ul>
           </transition>
           <li @click="medicinesOpen = !medicinesOpen"
-            :class="[{'bg-[#4a90e2] text-white': isMedicinesMenuActive, 'bg-[#2d3238]': medicinesOpen && !isMedicinesMenuActive}, 'rounded-md mx-2 transition-all cursor-pointer flex items-center px-8 py-3']">
+            :class="[{'bg-[#FFB81C] text-[#800000]': isMedicinesMenuActive, 'hover:bg-[#FFB81C] hover:text-[#800000]': medicinesOpen && !isMedicinesMenuActive}, 'rounded-md mx-2 transition-all cursor-pointer flex items-center px-8 py-3']">
             <span class="material-icons mr-4">medication</span> Medicines
             <span class="material-icons ml-auto">{{ medicinesOpen ? 'expand_less' : 'expand_more' }}</span>
           </li>
@@ -100,25 +101,25 @@ const handleLogout = async () => {
               <li>
                 <router-link to="/add-medicine"
                   class="flex items-center w-full px-4 py-2 rounded-md transition-all submenu-link"
-                  :class="isAddMedicineActive ? 'bg-[#e5e8ed] text-[#222] font-semibold' : 'text-[#bfc4cb] hover:text-white hover:bg-[#23272b]'">
+                  :class="isAddMedicineActive ? 'bg-[#FFB81C] text-[#800000] font-semibold' : 'text-white hover:text-[#800000] hover:bg-[#FFB81C]'">
                   <span class="material-icons submenu-icon mr-3"
-                    :class="isAddMedicineActive ? 'text-[#222]' : ''">radio_button_unchecked</span>
+                    :class="isAddMedicineActive ? 'text-[#800000]' : ''">radio_button_unchecked</span>
                   Add Medicine
                 </router-link>
               </li>
               <li>
                 <router-link to="/medicine-details"
                   class="flex items-center w-full px-4 py-2 rounded-md transition-all submenu-link"
-                  :class="isMedicineDetailsActive ? 'bg-[#e5e8ed] text-[#222] font-semibold' : 'text-[#bfc4cb] hover:text-white hover:bg-[#23272b]'">
+                  :class="isMedicineDetailsActive ? 'bg-[#FFB81C] text-[#800000] font-semibold' : 'text-white hover:text-[#800000] hover:bg-[#FFB81C]'">
                   <span class="material-icons submenu-icon mr-3"
-                    :class="isMedicineDetailsActive ? 'text-[#222]' : ''">radio_button_unchecked</span>
+                    :class="isMedicineDetailsActive ? 'text-[#800000]' : ''">radio_button_unchecked</span>
                   Medicine Details
                 </router-link>
               </li>
             </ul>
           </transition>
           <li @click="reportsOpen = !reportsOpen"
-            :class="[{'bg-[#4a90e2] text-white': isReportsMenuActive, 'bg-[#2d3238]': reportsOpen && !isReportsMenuActive}, 'rounded-md mx-2 transition-all cursor-pointer flex items-center px-8 py-3']">
+            :class="[{'bg-[#FFB81C] text-[#800000]': isReportsMenuActive, 'hover:bg-[#FFB81C] hover:text-[#800000]': reportsOpen && !isReportsMenuActive}, 'rounded-md mx-2 transition-all cursor-pointer flex items-center px-8 py-3']">
             <span class="material-icons mr-4">edit</span> Reports
             <span class="material-icons ml-auto">{{ reportsOpen ? 'expand_less' : 'expand_more' }}</span>
           </li>
@@ -127,22 +128,24 @@ const handleLogout = async () => {
               <li>
                 <router-link to="/reports"
                   class="flex items-center w-full px-4 py-2 rounded-md transition-all submenu-link"
-                  :class="isReportsActive ? 'bg-[#e5e8ed] text-[#222] font-semibold' : 'text-[#bfc4cb] hover:text-white hover:bg-[#23272b]'">
+                  :class="isReportsActive ? 'bg-[#FFB81C] text-[#800000] font-semibold' : 'text-white hover:text-[#800000] hover:bg-[#FFB81C]'">
                   <span class="material-icons submenu-icon mr-3"
-                    :class="isReportsActive ? 'text-[#222]' : ''">radio_button_unchecked</span>
+                    :class="isReportsActive ? 'text-[#800000]' : ''">radio_button_unchecked</span>
                   Reports
                 </router-link>
               </li>
             </ul>
           </transition>
           <li>
-            <router-link to="/users" class="flex items-center px-8 py-3 rounded-md text-white hover:bg-[#2d3238] transition-all sidebar-link"
-              :class="{ 'bg-[#2d3238]': route.path === '/users' }">
+            <router-link to="/users"
+              class="flex items-center px-8 py-3 rounded-md text-white hover:bg-[#FFB81C] hover:text-[#800000] transition-all sidebar-link"
+              :class="{ 'bg-[#FFB81C] text-[#800000]': route.path === '/users' }">
               <span class="material-icons mr-4">group</span> Users
             </router-link>
           </li>
           <li>
-            <span @click="handleLogout" class="flex items-center px-8 py-3 rounded-md text-white hover:bg-[#2d3238] transition-all cursor-pointer">
+            <span @click="handleLogout"
+              class="flex items-center px-8 py-3 rounded-md text-white hover:bg-[#FFB81C] hover:text-[#800000] transition-all cursor-pointer">
               <span class="material-icons mr-4">logout</span> Logout
             </span>
           </li>
@@ -151,14 +154,16 @@ const handleLogout = async () => {
     </aside>
 
     <!-- Main Content -->
-    <div class="flex-1 flex flex-col bg-[#454c53]">
+    <div class="flex-1 flex flex-col bg-[#fff]">
       <!-- Top Bar -->
-      <header class="flex justify-between items-center bg-[#23272b] text-white px-8 h-14 text-lg font-medium">
-        <div>Clinic Management System</div>
+      <header class="flex justify-between items-center bg-[#800000] text-white px-8 h-14 text-lg font-medium">
+        <div class="text-[#FFB81C]">Clinic Management System</div>
         <div class="text-base">Welcome {{ displayName }}!</div>
       </header>
       <!-- Child view will be rendered here -->
-      <router-view />
+      <div class="flex-1 overflow-y-auto">
+        <router-view />
+      </div>
     </div>
   </div>
 </template>

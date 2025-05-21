@@ -1,27 +1,27 @@
 <template>
   <section class="p-8">
     <h2 class="text-3xl text-gray-200 mb-6 font-semibold">Users</h2>
-    <div class="bg-[#232a2f] rounded-md shadow-md mb-8 p-6 border-t-4 border-[#3973a5]">
+    <div class="bg-[#232a2f] rounded-md shadow-md mb-8 p-6 border-t-4 border-[#800000]">
       <div class="text-lg text-gray-200 font-semibold mb-4">Add User</div>
       <form class="grid grid-cols-1 md:grid-cols-3 gap-4 items-center mb-2">
         <div>
           <label class="block text-gray-200 font-semibold mb-1">Display Name</label>
-          <input class="w-full bg-[#232a2f] border border-[#6fa3d9] rounded px-3 py-2 text-gray-200" type="text" />
+          <input class="w-full bg-[#232a2f] border border-[#FFB81C] rounded px-3 py-2 text-gray-200" type="text" />
         </div>
         <div>
           <label class="block text-gray-200 font-semibold mb-1">Username</label>
-          <input class="w-full bg-[#232a2f] border border-[#6fa3d9] rounded px-3 py-2 text-gray-200" type="text" value="admin" />
+          <input class="w-full bg-[#232a2f] border border-[#FFB81C] rounded px-3 py-2 text-gray-200" type="text" value="admin" />
         </div>
         <div>
           <label class="block text-gray-200 font-semibold mb-1">Password</label>
-          <input class="w-full bg-[#232a2f] border border-[#6fa3d9] rounded px-3 py-2 text-gray-200" type="password" value="......." />
+          <input class="w-full bg-[#232a2f] border border-[#FFB81C] rounded px-3 py-2 text-gray-200" type="password" value="......." />
         </div>
         <div class="md:col-span-2">
           <label class="block text-gray-200 font-semibold mb-1">Picture</label>
           <input type="file" class="block w-full text-gray-200" />
         </div>
         <div class="flex items-end">
-          <button type="submit" class="bg-[#3973a5] text-white px-8 py-2 rounded">Save</button>
+          <button type="submit" class="bg-[#800000] text-white px-8 py-2 rounded">Save</button>
         </div>
       </form>
     </div>
