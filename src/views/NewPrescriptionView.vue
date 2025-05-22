@@ -1,68 +1,74 @@
 <template>
-  <section class="new-prescription">
-    <h2>New Prescription</h2>
-    <div class="form-card">
-      <div class="form-title">Add New Prescription</div>
-      <form>
-        <div class="row">
-          <div class="field-group">
-            <label>Select Patient</label>
-            <select><option>Select Patient</option></select>
+  <section class="p-8">
+    <h2 class="text-red-500 mb-4">New Prescription</h2>
+    <div class="bg-[#232a2f] rounded-md shadow-md p-6">
+      <div class="text-[#cfd8dc] text-xl font-medium mb-4 border-b-2 border-[#3973a5] pb-2">Add New Prescription</div>
+      <form class="flex flex-col gap-4">
+        <div class="flex gap-4">
+          <div class="flex flex-col flex-1 min-w-[120px]">
+            <label class="text-[#cfd8dc] text-base font-semibold mb-1.5">Select Patient</label>
+            <select class="bg-[#232a2f] border border-[#6fa3d9] rounded text-[#cfd8dc] p-2 text-base outline-none">
+              <option>Select Patient</option>
+            </select>
           </div>
-          <div class="field-group">
-            <label>Visit Date</label>
-            <input type="date" />
+          <div class="flex flex-col flex-1 min-w-[120px]">
+            <label class="text-[#cfd8dc] text-base font-semibold mb-1.5">Visit Date</label>
+            <input type="date" class="bg-[#232a2f] border border-[#6fa3d9] rounded text-[#cfd8dc] p-2 text-base outline-none" />
           </div>
-          <div class="field-group">
-            <label>Next Visit Date</label>
-            <input type="date" />
-          </div>
-        </div>
-        <div class="row">
-          <div class="field-group">
-            <label>BP</label>
-            <input type="text" />
-          </div>
-          <div class="field-group">
-            <label>Weight</label>
-            <input type="text" />
-          </div>
-          <div class="field-group">
-            <label>Disease</label>
-            <input type="text" />
+          <div class="flex flex-col flex-1 min-w-[120px]">
+            <label class="text-[#cfd8dc] text-base font-semibold mb-1.5">Next Visit Date</label>
+            <input type="date" class="bg-[#232a2f] border border-[#6fa3d9] rounded text-[#cfd8dc] p-2 text-base outline-none" />
           </div>
         </div>
-        <div class="row">
-          <div class="field-group">
-            <label>Select Medicine</label>
-            <select><option>Select Medicine</option></select>
+        <div class="flex gap-4">
+          <div class="flex flex-col flex-1 min-w-[120px]">
+            <label class="text-[#cfd8dc] text-base font-semibold mb-1.5">BP</label>
+            <input type="text" class="bg-[#232a2f] border border-[#6fa3d9] rounded text-[#cfd8dc] p-2 text-base outline-none" />
           </div>
-          <div class="field-group">
-            <label>Select Packing</label>
-            <select><option></option></select>
+          <div class="flex flex-col flex-1 min-w-[120px]">
+            <label class="text-[#cfd8dc] text-base font-semibold mb-1.5">Weight</label>
+            <input type="text" class="bg-[#232a2f] border border-[#6fa3d9] rounded text-[#cfd8dc] p-2 text-base outline-none" />
           </div>
-          <div class="field-group">
-            <label>Quantity</label>
-            <input type="text" />
-          </div>
-          <div class="field-group">
-            <label>Dosage</label>
-            <input type="text" />
-          </div>
-          <div class="field-group add-btn-group">
-            <button type="button" class="add-btn">+</button>
+          <div class="flex flex-col flex-1 min-w-[120px]">
+            <label class="text-[#cfd8dc] text-base font-semibold mb-1.5">Disease</label>
+            <input type="text" class="bg-[#232a2f] border border-[#6fa3d9] rounded text-[#cfd8dc] p-2 text-base outline-none" />
           </div>
         </div>
-        <div class="table-section">
-          <table>
+        <div class="flex gap-4">
+          <div class="flex flex-col flex-1 min-w-[120px]">
+            <label class="text-[#cfd8dc] text-base font-semibold mb-1.5">Select Medicine</label>
+            <select class="bg-[#232a2f] border border-[#6fa3d9] rounded text-[#cfd8dc] p-2 text-base outline-none">
+              <option>Select Medicine</option>
+            </select>
+          </div>
+          <div class="flex flex-col flex-1 min-w-[120px]">
+            <label class="text-[#cfd8dc] text-base font-semibold mb-1.5">Select Packing</label>
+            <select class="bg-[#232a2f] border border-[#6fa3d9] rounded text-[#cfd8dc] p-2 text-base outline-none">
+              <option></option>
+            </select>
+          </div>
+          <div class="flex flex-col flex-1 min-w-[120px]">
+            <label class="text-[#cfd8dc] text-base font-semibold mb-1.5">Quantity</label>
+            <input type="text" class="bg-[#232a2f] border border-[#6fa3d9] rounded text-[#cfd8dc] p-2 text-base outline-none" />
+          </div>
+          <div class="flex flex-col flex-1 min-w-[120px]">
+            <label class="text-[#cfd8dc] text-base font-semibold mb-1.5">Dosage</label>
+            <input type="text" class="bg-[#232a2f] border border-[#6fa3d9] rounded text-[#cfd8dc] p-2 text-base outline-none" />
+          </div>
+          <div class="flex items-end min-w-[50px]">
+            <button type="button" class="bg-[#3973a5] text-white rounded text-2xl w-[38px] h-[38px] cursor-pointer">+</button>
+          </div>
+        </div>
+        <div class="mt-4">
+          <table class="w-full bg-[#232a2f]">
             <thead>
               <tr>
-                <th>S.No</th>
-                <th>Medicine Name</th>
-                <th>Packing</th>
-                <th>QTY</th>
-                <th>Dosage</th>
-                <th>Action</th>
+                <th class="bg-[#800000] text-white font-semibold py-2">S.No</th>
+                <th class="bg-[#800000] text-white font-semibold py-2">Medicine Name</th>
+                <th class="bg-[#800000] text-white font-semibold py-2">Packing</th>
+                <th class="bg-[#800000] text-white font-semibold py-2">QTY</th>
+                <th class="bg-[#800000] text-white font-semibold py-2">Dosage</th>
+                <th class="bg-[#800000] text-white font-semibold py-2">Action</th>
               </tr>
             </thead>
             <tbody>
@@ -70,8 +76,8 @@
             </tbody>
           </table>
         </div>
-        <div class="save-btn-row">
-          <button type="submit" class="save-btn">Save</button>
+        <div class="flex justify-end mt-4">
+          <button type="submit" class="bg-[#800000] text-white rounded text-lg px-10 py-2.5 cursor-pointer">Save</button>
         </div>
       </form>
     </div>
@@ -80,108 +86,4 @@
 
 <script setup lang="ts">
 // No logic for now
-</script>
-
-<style scoped>
-.new-prescription {
-  padding: 32px;
-}
-.new-prescription h2 {
-  color: #cfd8dc;
-  margin-bottom: 18px;
-}
-.form-card {
-  background: #232a2f;
-  border-radius: 6px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-  padding: 18px 24px 24px 24px;
-}
-.form-title {
-  color: #cfd8dc;
-  font-size: 1.2rem;
-  font-weight: 500;
-  margin-bottom: 18px;
-  border-bottom: 2px solid #3973a5;
-  padding-bottom: 8px;
-}
-form {
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-}
-.row {
-  display: flex;
-  gap: 18px;
-  margin-bottom: 0;
-}
-.field-group {
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  min-width: 120px;
-}
-.field-group label {
-  color: #cfd8dc;
-  font-size: 1rem;
-  font-weight: 600;
-  margin-bottom: 6px;
-}
-.field-group input,
-.field-group select {
-  background: #232a2f;
-  border: 1px solid #6fa3d9;
-  border-radius: 3px;
-  color: #cfd8dc;
-  padding: 7px 10px;
-  font-size: 1rem;
-  outline: none;
-}
-.add-btn-group {
-  display: flex;
-  align-items: flex-end;
-  min-width: 50px;
-}
-.add-btn {
-  background: #3973a5;
-  color: #fff;
-  border: none;
-  border-radius: 3px;
-  font-size: 1.5rem;
-  width: 38px;
-  height: 38px;
-  cursor: pointer;
-}
-.table-section {
-  margin-top: 18px;
-}
-table {
-  width: 100%;
-  border-collapse: collapse;
-  background: #232a2f;
-}
-thead th {
-  background: #800000;
-  color: #fff;
-  font-weight: 600;
-  padding: 8px 0;
-}
-tbody td {
-  color: #cfd8dc;
-  padding: 8px 0;
-  text-align: center;
-}
-.save-btn-row {
-  display: flex;
-  justify-content: flex-end;
-  margin-top: 18px;
-}
-.save-btn {
-  background: #800000;
-  color: #fff;
-  border: none;
-  border-radius: 3px;
-  font-size: 1.1rem;
-  padding: 10px 38px;
-  cursor: pointer;
-}
-</style> 
+</script> 

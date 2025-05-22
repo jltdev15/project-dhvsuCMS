@@ -49,16 +49,15 @@ const handleLogout = async () => {
       <nav class="flex-1 mt-5">
         <ul class="space-y-1">
           <li>
-            <router-link to="/"
-              class="flex items-center px-8 py-3 rounded-md text-white hover:bg-[#FFB81C] hover:text-[#800000] transition-all sidebar-link"
-              :class="{ 'bg-[#FFB81C] text-[#800000]': route.path === '/' }">
-              <span class="material-icons mr-4">dashboard</span> Dashboard
+            <router-link to="/" class="flex items-center px-8 py-3 rounded-md text-white hover:bg-[#FFB81C] hover:text-[#800000] transition-all sidebar-link"
+              :class="{ 'bg-[#FFB81C] text-[#800000] font-semibold': route.path === '/' }">
+              <span class="material-icons mr-4"  >dashboard</span> Dashboard
             </router-link>
           </li>
           <li @click="patientsOpen = !patientsOpen"
-            :class="[{'bg-[#FFB81C] text-[#800000]': isPatientsMenuActive, 'hover:bg-[#FFB81C] hover:text-[#800000]': patientsOpen && !isPatientsMenuActive}, 'rounded-md mx-2 transition-all cursor-pointer flex items-center px-8 py-3']">
-            <span class="material-icons mr-4">person</span> Patients
-            <span class="material-icons ml-auto">{{ patientsOpen ? 'expand_less' : 'expand_more' }}</span>
+            :class="[{'bg-[#FFB81C] text-[#800000] font-semibold': isPatientsMenuActive, 'hover:bg-[#FFB81C] hover:text-[#800000]': patientsOpen && !isPatientsMenuActive}, 'rounded-md mx-2 transition-all cursor-pointer flex items-center px-8 py-3']">
+            <span class="material-icons mr-4" :class="{ 'text-[#800000]': isPatientsMenuActive }">person</span> Patients
+            <span class="material-icons ml-auto" :class="{ 'text-[#800000]': isPatientsMenuActive }">{{ patientsOpen ? 'expand_less' : 'expand_more' }}</span>
           </li>
           <transition name="submenu">
             <ul v-if="patientsOpen || isPatientsMenuActive" class="flex flex-col ml-8">
@@ -92,9 +91,9 @@ const handleLogout = async () => {
             </ul>
           </transition>
           <li @click="medicinesOpen = !medicinesOpen"
-            :class="[{'bg-[#FFB81C] text-[#800000]': isMedicinesMenuActive, 'hover:bg-[#FFB81C] hover:text-[#800000]': medicinesOpen && !isMedicinesMenuActive}, 'rounded-md mx-2 transition-all cursor-pointer flex items-center px-8 py-3']">
-            <span class="material-icons mr-4">medication</span> Medicines
-            <span class="material-icons ml-auto">{{ medicinesOpen ? 'expand_less' : 'expand_more' }}</span>
+            :class="[{'bg-[#FFB81C] text-[#800000] font-semibold': isMedicinesMenuActive, 'hover:bg-[#FFB81C] hover:text-[#800000]': medicinesOpen && !isMedicinesMenuActive}, 'rounded-md mx-2 transition-all cursor-pointer flex items-center px-8 py-3']">
+            <span class="material-icons mr-4" :class="{ 'text-[#800000]': isMedicinesMenuActive }">medication</span> Medicines
+            <span class="material-icons ml-auto" :class="{ 'text-[#800000]': isMedicinesMenuActive }">{{ medicinesOpen ? 'expand_less' : 'expand_more' }}</span>
           </li>
           <transition name="submenu">
             <ul v-if="medicinesOpen || isMedicinesMenuActive" class="flex flex-col ml-8">
@@ -119,9 +118,9 @@ const handleLogout = async () => {
             </ul>
           </transition>
           <li @click="reportsOpen = !reportsOpen"
-            :class="[{'bg-[#FFB81C] text-[#800000]': isReportsMenuActive, 'hover:bg-[#FFB81C] hover:text-[#800000]': reportsOpen && !isReportsMenuActive}, 'rounded-md mx-2 transition-all cursor-pointer flex items-center px-8 py-3']">
-            <span class="material-icons mr-4">edit</span> Reports
-            <span class="material-icons ml-auto">{{ reportsOpen ? 'expand_less' : 'expand_more' }}</span>
+            :class="[{'bg-[#FFB81C] text-[#800000] font-semibold': isReportsMenuActive, 'hover:bg-[#FFB81C] hover:text-[#800000]': reportsOpen && !isReportsMenuActive}, 'rounded-md mx-2 transition-all cursor-pointer flex items-center px-8 py-3']">
+            <span class="material-icons mr-4" :class="{ 'text-[#800000]': isReportsMenuActive }">edit</span> Reports
+            <span class="material-icons ml-auto" :class="{ 'text-[#800000]': isReportsMenuActive }">{{ reportsOpen ? 'expand_less' : 'expand_more' }}</span>
           </li>
           <transition name="submenu">
             <ul v-if="reportsOpen || isReportsMenuActive" class="flex flex-col ml-8">
@@ -137,15 +136,13 @@ const handleLogout = async () => {
             </ul>
           </transition>
           <li>
-            <router-link to="/users"
-              class="flex items-center px-8 py-3 rounded-md text-white hover:bg-[#FFB81C] hover:text-[#800000] transition-all sidebar-link"
-              :class="{ 'bg-[#FFB81C] text-[#800000]': route.path === '/users' }">
-              <span class="material-icons mr-4">group</span> Users
+            <router-link to="/users" class="flex items-center px-8 py-3 rounded-md text-white hover:bg-[#FFB81C] hover:text-[#800000] transition-all sidebar-link"
+              :class="{ 'bg-[#FFB81C] text-[#800000] font-semibold': route.path === '/users' }">
+              <span class="material-icons mr-4" :class="{ 'text-[#800000]': route.path === '/users' }">group</span> Users
             </router-link>
           </li>
           <li>
-            <span @click="handleLogout"
-              class="flex items-center px-8 py-3 rounded-md text-white hover:bg-[#FFB81C] hover:text-[#800000] transition-all cursor-pointer">
+            <span @click="handleLogout" class="flex items-center px-8 py-3 rounded-md text-white hover:bg-[#FFB81C] hover:text-[#800000] transition-all cursor-pointer">
               <span class="material-icons mr-4">logout</span> Logout
             </span>
           </li>
