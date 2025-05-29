@@ -38,11 +38,9 @@
               <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                 <span class="material-icons text-gray-500 text-sm">search</span>
               </div>
-              <input
-                v-model="searchQuery"
+              <input v-model="searchQuery"
                 class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg py-2 pl-10 pr-4 focus:ring-2 focus:ring-[#3973a5] focus:border-[#3973a5] outline-none"
-                type="text" 
-                placeholder="Search medicines..." />
+                type="text" placeholder="Search medicines..." />
             </div>
           </div>
           <!-- <div class="flex flex-wrap gap-2">
@@ -155,7 +153,7 @@
       class="fixed inset-0 backdrop-blur-md bg-gray-900/50 flex items-center justify-center z-50 transition-all duration-300">
       <div
         class="bg-white/90 backdrop-filter backdrop-blur-sm rounded-xl p-0 w-full max-w-3xl shadow-xl border border-white/20">
-        <div class="bg-[#3973a5]/90 backdrop-filter backdrop-blur-sm px-6 py-4 rounded-t-xl">
+        <div class="bg-red-800 backdrop-filter backdrop-blur-sm px-6 py-4 rounded-t-xl">
           <div class="flex justify-between items-center">
             <h3 class="text-xl text-white font-semibold flex items-center gap-2">
               <span class="material-icons">add_circle</span>
@@ -251,7 +249,7 @@
                 Cancel
               </button>
               <button type="submit"
-                class="bg-[#3973a5] hover:bg-[#2c5a84] text-white px-6 py-2.5 rounded-lg font-medium flex items-center gap-2 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-md"
+                class="bg-[#800000] text-white px-6 py-2.5 rounded-lg font-medium flex items-center gap-2 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-md"
                 :disabled="loading">
                 <span class="material-icons text-base">{{ loading ? 'hourglass_top' : 'save' }}</span>
                 {{ loading ? 'Saving...' : 'Save Medicine' }}

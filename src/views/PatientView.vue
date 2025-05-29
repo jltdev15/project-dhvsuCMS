@@ -131,7 +131,7 @@
       class="fixed inset-0 backdrop-blur-md bg-gray-900/50 flex items-center justify-center z-50 transition-all duration-300">
       <div
         class="bg-white/90 backdrop-filter backdrop-blur-sm rounded-xl p-0 w-full max-w-3xl shadow-xl border border-white/20">
-        <div class="bg-[#3973a5]/90 backdrop-filter backdrop-blur-sm px-6 py-4 rounded-t-xl">
+        <div class="bg-[#800000]/90 backdrop-filter backdrop-blur-sm px-6 py-4 rounded-t-xl">
           <div class="flex justify-between items-center">
             <h3 class="text-xl text-white font-semibold flex items-center gap-2">
               <span class="material-icons">add_circle</span>
@@ -265,7 +265,7 @@
                 Cancel
               </button>
               <button type="submit"
-                class="bg-[#3973a5] hover:bg-[#2c5a84] text-white px-6 py-2.5 rounded-lg font-medium flex items-center gap-2 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-md"
+                class="bg-[#800000] text-white px-6 py-2.5 rounded-lg font-medium flex items-center gap-2 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-md"
                 :disabled="loading">
                 <span class="material-icons text-base">{{ loading ? 'hourglass_top' : 'save' }}</span>
                 {{ loading ? 'Saving...' : 'Save Patient' }}
