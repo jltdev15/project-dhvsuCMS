@@ -3,10 +3,10 @@ import { authMiddleware } from '../middleware/auth'
 import HomeView from '../views/HomeView.vue'
 import DashboardView from '../views/DashboardView.vue'
 import NewPrescriptionView from '../views/NewPrescriptionView.vue'
-import AddPatientView from '../views/AddPatientView.vue'
+import PatientView from '../views/PatientView.vue'
 import PatientHistoryView from '../views/PatientHistoryView.vue'
-import AddMedicineView from '../views/AddMedicineView.vue'
-import MedicineDetailsView from '../views/MedicineDetailsView.vue'
+import AddMedicineView from '../views/MedicineView.vue'
+
 import ReportsView from '../views/ReportsView.vue'
 import UsersView from '../views/UsersView.vue'
 // @ts-ignore
@@ -32,24 +32,14 @@ const router = createRouter({
           component: NewPrescriptionView,
         },
         {
-          path: 'add-patient',
-          name: 'add-patient',
-          component: AddPatientView,
+          path: 'patients',
+          name: 'patients',
+          component: PatientView,
         },
         {
-          path: 'patient-history',
-          name: 'patient-history',
-          component: PatientHistoryView,
-        },
-        {
-          path: 'add-medicine',
-          name: 'add-medicine',
+          path: 'medicines',
+          name: 'medicines',
           component: AddMedicineView,
-        },
-        {
-          path: 'medicine-details',
-          name: 'medicine-details',
-          component: MedicineDetailsView,
         },
         {
           path: 'reports',

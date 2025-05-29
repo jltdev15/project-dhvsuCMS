@@ -9,7 +9,7 @@
 
 <script lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue'
-import { getDatabase, ref as dbRef, onValue } from 'firebase/database'
+import { getDatabase, ref as dbRef, onValue, off } from 'firebase/database'
 import { app } from '../firebase'
 import Chart from 'chart.js/auto'
 
@@ -19,24 +19,33 @@ export default {
     const db = getDatabase(app)
     const inventoryChart = ref<HTMLCanvasElement | null>(null)
     let chartInstance: Chart | null = null
+    const medicinesRef = dbRef(db, 'medicines')
 
-    const initializeInventoryChart = () => {
+    const updateChart = (medicineData: any[]) => {
+      // Extract medicine names and quantities for the chart
+      const labels = medicineData.map(med => med.name)
+      const quantities = medicineData.map(med => med.quantity)
+      
+      // Generate background colors based on stock levels
+      const backgroundColors = quantities.map(quantity => {
+        if (quantity >= 100) return '#4CAF50' // Green for good stock
+        else if (quantity >= 50) return '#FFC107' // Yellow for moderate
+        else return '#F44336' // Red for low stock
+      })
+
+      if (chartInstance) {
+        chartInstance.destroy()
+      }
+
       if (inventoryChart.value) {
         chartInstance = new Chart(inventoryChart.value, {
           type: 'bar',
           data: {
-            labels: ['Paracetamol', 'Amoxicillin', 'Omeprazole', 'Cetirizine', 'Ibuprofen', 'Metformin'],
+            labels: labels,
             datasets: [{
               label: 'Current Stock',
-              data: [150, 80, 45, 120, 90, 60],
-              backgroundColor: [
-                '#4CAF50', // Green for good stock
-                '#FFC107', // Yellow for moderate
-                '#F44336', // Red for low
-                '#4CAF50',
-                '#FFC107',
-                '#F44336'
-              ],
+              data: quantities,
+              backgroundColor: backgroundColors,
               borderRadius: 4,
               barThickness: 30
             }]
@@ -88,11 +97,33 @@ export default {
       }
     }
 
+    const fetchMedicineData = () => {
+      onValue(medicinesRef, (snapshot) => {
+        const data = snapshot.val()
+        const medicineData = []
+        
+        // Convert Firebase object to array of medicines
+        if (data) {
+          for (const key in data) {
+            medicineData.push({
+              id: key,
+              ...data[key]
+            })
+          }
+        }
+        
+        updateChart(medicineData)
+      })
+    }
+
     onMounted(() => {
-      initializeInventoryChart()
+      fetchMedicineData()
     })
 
     onUnmounted(() => {
+      // Clean up Firebase listeners
+      off(medicinesRef)
+      
       if (chartInstance) {
         chartInstance.destroy()
       }
