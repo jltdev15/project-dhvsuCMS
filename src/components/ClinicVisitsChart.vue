@@ -19,16 +19,46 @@ export default {
     const db = getDatabase(app)
     const visitsChart = ref<HTMLCanvasElement | null>(null)
     let chartInstance: Chart | null = null
+    const visitsData = ref<number[]>([])
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+
+    const fetchVisitsData = () => {
+      const visitsRef = dbRef(db, 'clinic-visits')
+      onValue(visitsRef, (snapshot) => {
+        const data = snapshot.val()
+        if (data) {
+          // Initialize monthly counts
+          const monthlyCounts = new Array(12).fill(0)
+          
+          // Count visits by month
+          Object.values(data).forEach((visit: any) => {
+            const visitDate = new Date(visit.timestamp)
+            const monthIndex = visitDate.getMonth()
+            monthlyCounts[monthIndex]++
+          })
+          
+          visitsData.value = monthlyCounts
+          updateChart()
+        }
+      })
+    }
+
+    const updateChart = () => {
+      if (chartInstance && visitsChart.value) {
+        chartInstance.data.datasets[0].data = visitsData.value
+        chartInstance.update()
+      }
+    }
 
     const initializeVisitsChart = () => {
       if (visitsChart.value) {
         chartInstance = new Chart(visitsChart.value, {
           type: 'bar',
           data: {
-            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+            labels: months,
             datasets: [{
               label: 'Number of Visits',
-              data: [65, 59, 80, 81, 56, 55, 40, 45, 70, 75, 85, 90],
+              data: visitsData.value,
               backgroundColor: '#4a90e2',
               borderRadius: 4,
               barThickness: 20
@@ -71,6 +101,7 @@ export default {
 
     onMounted(() => {
       initializeVisitsChart()
+      fetchVisitsData()
     })
 
     onUnmounted(() => {

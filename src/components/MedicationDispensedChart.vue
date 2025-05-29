@@ -19,22 +19,57 @@ export default {
     const db = getDatabase(app)
     const dispensedChart = ref<HTMLCanvasElement | null>(null)
     let chartInstance: Chart | null = null
+    const medicationData = ref<number[]>([])
+    // const medicationTypes = [
+    //   'Pain Relievers',
+    //   'Antibiotics',
+    //   'Antihistamines',
+    //   'Antacids',
+    //   'Anti-inflammatory',
+    //   'Other'
+    // ]
+
+    // const fetchMedicationData = () => {
+    //   const medicationsRef = dbRef(db, 'medications-dispensed')
+    //   onValue(medicationsRef, (snapshot) => {
+    //     const data = snapshot.val()
+    //     if (data) {
+    //       // Initialize counts for each medication type
+    //       const typeCounts = new Array(medicationTypes.length).fill(0)
+          
+    //       // Count medications by type
+    //       Object.values(data).forEach((medication: any) => {
+    //         const type = medication.type
+    //         const index = medicationTypes.indexOf(type)
+    //         if (index !== -1) {
+    //           typeCounts[index]++
+    //         } else {
+    //           // If type is not in our predefined list, count it as "Other"
+    //           typeCounts[typeCounts.length - 1]++
+    //         }
+    //       })
+          
+    //       medicationData.value = typeCounts
+    //       updateChart()
+    //     }
+    //   })
+    // }
+
+    const updateChart = () => {
+      if (chartInstance && dispensedChart.value) {
+        chartInstance.data.datasets[0].data = medicationData.value
+        chartInstance.update()
+      }
+    }
 
     const initializeDispensedChart = () => {
       if (dispensedChart.value) {
         chartInstance = new Chart(dispensedChart.value, {
           type: 'doughnut',
           data: {
-            labels: [
-              'Pain Relievers',
-              'Antibiotics',
-              'Antihistamines',
-              'Antacids',
-              'Anti-inflammatory',
-              'Other'
-            ],
+            // labels: medicationTypes,
             datasets: [{
-              data: [35, 25, 15, 10, 10, 5],
+              data: medicationData.value,
               backgroundColor: [
                 '#4CAF50', // Green
                 '#2196F3', // Blue
@@ -87,6 +122,7 @@ export default {
 
     onMounted(() => {
       initializeDispensedChart()
+      // fetchMedicationData()
     })
 
     onUnmounted(() => {

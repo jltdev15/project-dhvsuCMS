@@ -19,19 +19,46 @@ export default {
     const db = getDatabase(app)
     const trendChart = ref<HTMLCanvasElement | null>(null)
     let chartInstance: Chart | null = null
+    const visitsData = ref<number[]>([])
+    const months = [
+      'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
+      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'
+    ]
+
+    const fetchClinicVisitsData = () => {
+      const visitsRef = dbRef(db, 'clinic-visits')
+      onValue(visitsRef, (snapshot) => {
+        const data = snapshot.val()
+        if (data) {
+          // Process the data to get monthly counts
+          const monthlyCounts = new Array(12).fill(0)
+          Object.values(data).forEach((visit: any) => {
+            const visitDate = new Date(visit.timestamp)
+            const monthIndex = visitDate.getMonth()
+            monthlyCounts[monthIndex]++
+          })
+          visitsData.value = monthlyCounts
+          updateChart()
+        }
+      })
+    }
+
+    const updateChart = () => {
+      if (chartInstance && trendChart.value) {
+        chartInstance.data.datasets[0].data = visitsData.value
+        chartInstance.update()
+      }
+    }
 
     const initializeTrendChart = () => {
       if (trendChart.value) {
         chartInstance = new Chart(trendChart.value, {
           type: 'line',
           data: {
-            labels: [
-              'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
-              'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'
-            ],
+            labels: months,
             datasets: [{
               label: 'Clinic Visits',
-              data: [45, 52, 48, 55, 42, 38, 45, 50, 55, 60, 58, 52],
+              data: visitsData.value,
               borderColor: '#4F46E5',
               backgroundColor: 'rgba(79, 70, 229, 0.1)',
               borderWidth: 2,
@@ -104,6 +131,7 @@ export default {
 
     onMounted(() => {
       initializeTrendChart()
+      fetchClinicVisitsData()
     })
 
     onUnmounted(() => {

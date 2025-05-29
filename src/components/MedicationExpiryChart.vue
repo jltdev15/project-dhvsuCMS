@@ -19,20 +19,63 @@ export default {
     const db = getDatabase(app)
     const expiryChart = ref<HTMLCanvasElement | null>(null)
     let chartInstance: Chart | null = null
+    const expiryData = ref<number[]>([])
+    // const expiryLabels = [
+    //   'Expiring in 1 Month',
+    //   'Expiring in 2 Months',
+    //   'Expiring in 3 Months',
+    //   'Safe Stock'
+    // ]
+
+    const fetchExpiryData = () => {
+      const medicationsRef = dbRef(db, 'medications')
+      onValue(medicationsRef, (snapshot) => {
+        const data = snapshot.val()
+        if (data) {
+          // Initialize counts for each expiry category
+          const expiryCounts = new Array(4).fill(0)
+          const now = new Date()
+          const oneMonthFromNow = new Date(now.getFullYear(), now.getMonth() + 1, now.getDate())
+          const twoMonthsFromNow = new Date(now.getFullYear(), now.getMonth() + 2, now.getDate())
+          const threeMonthsFromNow = new Date(now.getFullYear(), now.getMonth() + 3, now.getDate())
+          
+          // Count medications by expiry date
+          Object.values(data).forEach((medication: any) => {
+            const expiryDate = new Date(medication.expiryDate)
+            const quantity = medication.quantity || 1
+
+            if (expiryDate <= oneMonthFromNow) {
+              expiryCounts[0] += quantity // Expiring in 1 month
+            } else if (expiryDate <= twoMonthsFromNow) {
+              expiryCounts[1] += quantity // Expiring in 2 months
+            } else if (expiryDate <= threeMonthsFromNow) {
+              expiryCounts[2] += quantity // Expiring in 3 months
+            } else {
+              expiryCounts[3] += quantity // Safe stock
+            }
+          })
+          
+          expiryData.value = expiryCounts
+          updateChart()
+        }
+      })
+    }
+
+    const updateChart = () => {
+      if (chartInstance && expiryChart.value) {
+        chartInstance.data.datasets[0].data = expiryData.value
+        chartInstance.update()
+      }
+    }
 
     const initializeExpiryChart = () => {
       if (expiryChart.value) {
         chartInstance = new Chart(expiryChart.value, {
           type: 'pie',
           data: {
-            labels: [
-              'Expiring in 1 Month',
-              'Expiring in 2 Months',
-              'Expiring in 3 Months',
-              'Safe Stock'
-            ],
+            // labels: expiryLabels,
             datasets: [{
-              data: [15, 25, 30, 130],
+              data: expiryData.value,
               backgroundColor: [
                 '#F44336', // Red for immediate expiry
                 '#FF9800', // Orange for 2 months
@@ -82,6 +125,7 @@ export default {
 
     onMounted(() => {
       initializeExpiryChart()
+      fetchExpiryData()
     })
 
     onUnmounted(() => {
