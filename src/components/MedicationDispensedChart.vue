@@ -20,40 +20,53 @@ export default {
     const dispensedChart = ref<HTMLCanvasElement | null>(null)
     let chartInstance: Chart | null = null
     const medicationData = ref<number[]>([])
-    // const medicationTypes = [
-    //   'Pain Relievers',
-    //   'Antibiotics',
-    //   'Antihistamines',
-    //   'Antacids',
-    //   'Anti-inflammatory',
-    //   'Other'
-    // ]
+    const medicationTypes = [
+      'Pain Relievers',
+      'Antibiotics',
+      'Antihistamines',
+      'Antacids',
+      'Anti-inflammatory',
+      'Other'
+    ]
 
-    // const fetchMedicationData = () => {
-    //   const medicationsRef = dbRef(db, 'medications-dispensed')
-    //   onValue(medicationsRef, (snapshot) => {
-    //     const data = snapshot.val()
-    //     if (data) {
-    //       // Initialize counts for each medication type
-    //       const typeCounts = new Array(medicationTypes.length).fill(0)
+    const generateDummyData = () => {
+      // Generate random numbers between 5 and 30 for each medication type
+      return Array.from({ length: medicationTypes.length }, () => Math.floor(Math.random() * 26) + 5)
+    }
+
+    const fetchMedicationData = () => {
+      const medicationsRef = dbRef(db, 'medications-dispensed')
+      onValue(medicationsRef, (snapshot) => {
+        const data = snapshot.val()
+        if (data) {
+          // Initialize counts for each medication type
+          const typeCounts = new Array(medicationTypes.length).fill(0)
           
-    //       // Count medications by type
-    //       Object.values(data).forEach((medication: any) => {
-    //         const type = medication.type
-    //         const index = medicationTypes.indexOf(type)
-    //         if (index !== -1) {
-    //           typeCounts[index]++
-    //         } else {
-    //           // If type is not in our predefined list, count it as "Other"
-    //           typeCounts[typeCounts.length - 1]++
-    //         }
-    //       })
+          // Count medications by type
+          Object.values(data).forEach((medication: any) => {
+            const type = medication.type
+            const index = medicationTypes.indexOf(type)
+            if (index !== -1) {
+              typeCounts[index]++
+            } else {
+              // If type is not in our predefined list, count it as "Other"
+              typeCounts[typeCounts.length - 1]++
+            }
+          })
           
-    //       medicationData.value = typeCounts
-    //       updateChart()
-    //     }
-    //   })
-    // }
+          medicationData.value = typeCounts
+        } else {
+          // Use dummy data if no Firebase data is available
+          medicationData.value = generateDummyData()
+        }
+        updateChart()
+      }, (error) => {
+        // Use dummy data if there's an error fetching from Firebase
+        console.error('Error fetching medication data:', error)
+        medicationData.value = generateDummyData()
+        updateChart()
+      })
+    }
 
     const updateChart = () => {
       if (chartInstance && dispensedChart.value) {
@@ -67,7 +80,7 @@ export default {
         chartInstance = new Chart(dispensedChart.value, {
           type: 'doughnut',
           data: {
-            // labels: medicationTypes,
+            labels: medicationTypes,
             datasets: [{
               data: medicationData.value,
               backgroundColor: [
@@ -122,7 +135,7 @@ export default {
 
     onMounted(() => {
       initializeDispensedChart()
-      // fetchMedicationData()
+      fetchMedicationData()
     })
 
     onUnmounted(() => {

@@ -20,12 +20,23 @@ export default {
     const expiryChart = ref<HTMLCanvasElement | null>(null)
     let chartInstance: Chart | null = null
     const expiryData = ref<number[]>([])
-    // const expiryLabels = [
-    //   'Expiring in 1 Month',
-    //   'Expiring in 2 Months',
-    //   'Expiring in 3 Months',
-    //   'Safe Stock'
-    // ]
+    const expiryLabels = [
+      'Expiring in 1 Month',
+      'Expiring in 2 Months',
+      'Expiring in 3 Months',
+      'Safe Stock'
+    ]
+
+    const generateDummyData = () => {
+      // Generate random numbers between 5 and 50 for each expiry category
+      // Make expiring soon categories have higher numbers to simulate urgency
+      return [
+        Math.floor(Math.random() * 46) + 5,  // Expiring in 1 month (5-50)
+        Math.floor(Math.random() * 41) + 10, // Expiring in 2 months (10-50)
+        Math.floor(Math.random() * 36) + 15, // Expiring in 3 months (15-50)
+        Math.floor(Math.random() * 31) + 20  // Safe stock (20-50)
+      ]
+    }
 
     const fetchExpiryData = () => {
       const medicationsRef = dbRef(db, 'medications')
@@ -56,8 +67,16 @@ export default {
           })
           
           expiryData.value = expiryCounts
-          updateChart()
+        } else {
+          // Use dummy data if no Firebase data is available
+          expiryData.value = generateDummyData()
         }
+        updateChart()
+      }, (error) => {
+        // Use dummy data if there's an error fetching from Firebase
+        console.error('Error fetching expiry data:', error)
+        expiryData.value = generateDummyData()
+        updateChart()
       })
     }
 
@@ -73,7 +92,7 @@ export default {
         chartInstance = new Chart(expiryChart.value, {
           type: 'pie',
           data: {
-            // labels: expiryLabels,
+            labels: expiryLabels,
             datasets: [{
               data: expiryData.value,
               backgroundColor: [

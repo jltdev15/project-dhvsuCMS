@@ -22,6 +22,11 @@ export default {
     const visitsData = ref<number[]>([])
     const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 
+    const generateDummyData = () => {
+      // Generate random numbers between 10 and 50 for each month
+      return Array.from({ length: 12 }, () => Math.floor(Math.random() * 41) + 10)
+    }
+
     const fetchVisitsData = () => {
       const visitsRef = dbRef(db, 'clinic-visits')
       onValue(visitsRef, (snapshot) => {
@@ -38,8 +43,16 @@ export default {
           })
           
           visitsData.value = monthlyCounts
-          updateChart()
+        } else {
+          // Use dummy data if no Firebase data is available
+          visitsData.value = generateDummyData()
         }
+        updateChart()
+      }, (error) => {
+        // Use dummy data if there's an error fetching from Firebase
+        console.error('Error fetching visits data:', error)
+        visitsData.value = generateDummyData()
+        updateChart()
       })
     }
 
