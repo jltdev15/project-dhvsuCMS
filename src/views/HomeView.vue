@@ -6,6 +6,7 @@ import { useAuthStore } from '../stores/auth';
 const router = useRouter();
 const authStore = useAuthStore();
 const route = useRoute();
+const showLogoutModal = ref(false);
 
 const currentUser = computed(() => authStore.getCurrentUser());
 const displayName = computed(() => currentUser.value?.displayName || currentUser.value?.email || 'User');
@@ -17,6 +18,14 @@ const handleLogout = async () => {
   } catch (error) {
     console.error('Failed to sign out:', error);
   }
+};
+
+const openLogoutModal = () => {
+  showLogoutModal.value = true;
+};
+
+const closeLogoutModal = () => {
+  showLogoutModal.value = false;
 };
 </script>
 
@@ -75,7 +84,7 @@ const handleLogout = async () => {
             </router-link>
           </li>
           <li class="mt-6">
-            <span @click="handleLogout" 
+            <span @click="openLogoutModal" 
               class="flex items-center px-4 py-2.5 rounded-lg text-white hover:bg-red-500/20 transition-all cursor-pointer border border-red-400/30">
               <span class="material-icons text-[22px] mr-3">logout</span> 
               <span>Logout</span>
@@ -101,8 +110,39 @@ const handleLogout = async () => {
       </div>
     </div>
   </div>
+
+  <!-- Logout Confirmation Modal -->
+  <Teleport to="body">
+    <div v-if="showLogoutModal" class="fixed inset-0 bg-white/30 backdrop-blur-sm flex items-center justify-center z-50">
+      <div class="bg-white rounded-lg p-6 w-[400px] shadow-xl">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="text-lg font-semibold text-gray-900">Confirm Logout</h3>
+          <button @click="closeLogoutModal" class="text-gray-400 hover:text-gray-500">
+            <span class="material-icons">close</span>
+          </button>
+        </div>
+        <p class="text-gray-600 mb-6">Are you sure you want to logout from your account?</p>
+        <div class="flex justify-end space-x-3">
+          <button 
+            @click="closeLogoutModal"
+            class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-md transition-colors"
+          >
+            Cancel
+          </button>
+          <button 
+            @click="handleLogout"
+            class="px-4 py-2 text-sm font-medium text-white bg-red-600 hover:bg-red-700 rounded-md transition-colors"
+          >
+            Logout
+          </button>
+        </div>
+      </div>
+    </div>
+  </Teleport>
 </template>
 
 <style scoped>
 @import url('https://fonts.googleapis.com/icon?family=Material+Icons');
+
+/* Remove the previous backdrop blur since we're using Tailwind's backdrop-blur */
 </style>

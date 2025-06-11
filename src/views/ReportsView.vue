@@ -8,7 +8,7 @@
       </div>
       <div class="flex items-center gap-4">
         <div class="bg-white px-4 py-2 rounded-lg shadow flex items-center gap-2">
-          <span class="material-icons text-[#3973a5]">assessment</span>
+          <span class="material-icons text-[#800000]">assessment</span>
           <div>
             <div class="text-sm text-gray-500">Available Reports</div>
             <div class="font-bold text-lg">2</div>
@@ -21,7 +21,7 @@
     <div class="grid grid-cols-1 gap-6">
       <!-- Patient Visits Report Card -->
       <div class="bg-white rounded-xl shadow-md overflow-hidden">
-        <div class="bg-[#3973a5] px-6 py-4">
+        <div class="bg-[#800000] px-6 py-4">
           <h2 class="text-xl text-white font-semibold flex items-center gap-2">
             <span class="material-icons">event_note</span>
             Patient Visits Report
@@ -37,7 +37,7 @@
                     <span class="material-icons text-gray-500">calendar_today</span>
                   </div>
                   <input v-model="visitsReport.startDate"
-                    class="w-full bg-gray-50 border border-gray-300 rounded-lg px-3 py-2.5 pl-10 focus:ring-2 focus:ring-[#3973a5] focus:border-[#3973a5] outline-none transition-all"
+                    class="w-full bg-gray-50 border border-gray-300 rounded-lg px-3 py-2.5 pl-10 focus:ring-2 focus:ring-[#800000] focus:border-[#800000] outline-none transition-all"
                     type="date" 
                     required 
                     :disabled="visitsLoading"
@@ -52,7 +52,7 @@
                     <span class="material-icons text-gray-500">calendar_today</span>
                   </div>
                   <input v-model="visitsReport.endDate"
-                    class="w-full bg-gray-50 border border-gray-300 rounded-lg px-3 py-2.5 pl-10 focus:ring-2 focus:ring-[#3973a5] focus:border-[#3973a5] outline-none transition-all"
+                    class="w-full bg-gray-50 border border-gray-300 rounded-lg px-3 py-2.5 pl-10 focus:ring-2 focus:ring-[#800000] focus:border-[#800000] outline-none transition-all"
                     type="date" 
                     required 
                     :disabled="visitsLoading"
@@ -79,7 +79,7 @@
 
             <div class="flex justify-end gap-3 pt-4 border-t">
               <button type="submit"
-                class="bg-[#3973a5] hover:bg-[#2c5a84] text-white px-6 py-2.5 rounded-lg font-medium flex items-center gap-2 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-md"
+                class="bg-[#800000] hover:bg-[#600000] text-white px-6 py-2.5 rounded-lg font-medium flex items-center gap-2 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-md"
                 :disabled="visitsLoading">
                 <span class="material-icons text-base">{{ visitsLoading ? 'hourglass_top' : 'picture_as_pdf' }}</span>
                 {{ visitsLoading ? 'Generating...' : 'Generate PDF Report' }}
@@ -91,7 +91,7 @@
 
       <!-- Disease Report Card -->
       <div class="bg-white rounded-xl shadow-md overflow-hidden">
-        <div class="bg-[#3973a5] px-6 py-4">
+        <div class="bg-[#800000] px-6 py-4">
           <h2 class="text-xl text-white font-semibold flex items-center gap-2">
             <span class="material-icons">coronavirus</span>
             Disease Based Report
@@ -107,7 +107,7 @@
                     <span class="material-icons text-gray-500">medical_services</span>
                   </div>
                   <select v-model="diseaseReport.disease"
-                    class="w-full bg-gray-50 border border-gray-300 rounded-lg px-3 py-2.5 pl-10 focus:ring-2 focus:ring-[#3973a5] focus:border-[#3973a5] outline-none transition-all appearance-none"
+                    class="w-full bg-gray-50 border border-gray-300 rounded-lg px-3 py-2.5 pl-10 focus:ring-2 focus:ring-[#800000] focus:border-[#800000] outline-none transition-all appearance-none"
                     required 
                     :disabled="diseaseLoading">
                     <option value="">Select disease/condition</option>
@@ -128,7 +128,7 @@
                     <span class="material-icons text-gray-500">calendar_today</span>
                   </div>
                   <input v-model="diseaseReport.startDate"
-                    class="w-full bg-gray-50 border border-gray-300 rounded-lg px-3 py-2.5 pl-10 focus:ring-2 focus:ring-[#3973a5] focus:border-[#3973a5] outline-none transition-all"
+                    class="w-full bg-gray-50 border border-gray-300 rounded-lg px-3 py-2.5 pl-10 focus:ring-2 focus:ring-[#800000] focus:border-[#800000] outline-none transition-all"
                     type="date" 
                     required 
                     :disabled="diseaseLoading"
@@ -143,7 +143,7 @@
                     <span class="material-icons text-gray-500">calendar_today</span>
                   </div>
                   <input v-model="diseaseReport.endDate"
-                    class="w-full bg-gray-50 border border-gray-300 rounded-lg px-3 py-2.5 pl-10 focus:ring-2 focus:ring-[#3973a5] focus:border-[#3973a5] outline-none transition-all"
+                    class="w-full bg-gray-50 border border-gray-300 rounded-lg px-3 py-2.5 pl-10 focus:ring-2 focus:ring-[#800000] focus:border-[#800000] outline-none transition-all"
                     type="date" 
                     required 
                     :disabled="diseaseLoading"
@@ -170,7 +170,7 @@
 
             <div class="flex justify-end gap-3 pt-4 border-t">
               <button type="submit"
-                class="bg-[#3973a5] hover:bg-[#2c5a84] text-white px-6 py-2.5 rounded-lg font-medium flex items-center gap-2 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-md"
+                class="bg-[#800000] hover:bg-[#600000] text-white px-6 py-2.5 rounded-lg font-medium flex items-center gap-2 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-md"
                 :disabled="diseaseLoading">
                 <span class="material-icons text-base">{{ diseaseLoading ? 'hourglass_top' : 'picture_as_pdf' }}</span>
                 {{ diseaseLoading ? 'Generating...' : 'Generate PDF Report' }}
