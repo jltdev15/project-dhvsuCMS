@@ -3,7 +3,7 @@
     <div class="flex flex-col items-center">
       <img src="/logo/logo.png" alt="University Logo" class="w-44 mb-5" />
       <h1 class="text-white text-3xl font-normal mb-8 text-center">
-        <span class="text-[#FFB81C] font-bold">DHVSU</span> Clinic Management System
+        <span class="text-[#FFB81C] font-bold">PAMSU</span> Clinic Management System
       </h1>
       <div class="bg-gray-800 px-9 py-8 rounded-lg shadow-lg min-w-[350px] flex flex-col items-stretch">
         <p class="text-gray-300 text-base mb-5 text-center">Please enter your login credentials</p>
@@ -37,10 +37,7 @@
         >
           {{ loading ? 'Signing in...' : 'Sign In' }}
         </button>
-        <p class="text-gray-400 text-sm mt-4 text-center">
-          Don't have an account? 
-          <router-link to="/register" class="text-[#FFB81C] hover:text-[#FFD700]">Create one</router-link>
-        </p>
+
       </div>
     </div>
   </div>

@@ -5,6 +5,16 @@
       <div>
         <h1 class="text-3xl font-bold text-gray-800">Medicines Management</h1>
         <p class="text-gray-600 mt-1">Add, edit and manage medicines inventory</p>
+        <!-- Filter indicator -->
+        <div v-if="expiryFilter" class="mt-2">
+          <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-[#800000] text-white">
+            <span class="material-icons text-sm mr-1">filter_list</span>
+            Filtered by: {{ expiryFilter.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) }}
+            <button @click="expiryFilter = ''" class="ml-2 hover:bg-[#600000] rounded-full p-0.5">
+              <span class="material-icons text-sm">close</span>
+            </button>
+          </span>
+        </div>
       </div>
       <div class="flex items-center gap-4">
         <div class="bg-white px-4 py-2 rounded-lg shadow flex items-center gap-2">
@@ -87,10 +97,10 @@
                   </div>
                 </td>
               </tr>
-              <tr v-else v-for="(medicine, index) in filteredMedicines" :key="medicine.id"
+              <tr v-else v-for="(medicine, index) in paginatedMedicines" :key="medicine.id"
                 class="hover:bg-gray-50 transition-colors">
                 <td class="px-4 py-3 whitespace-nowrap">
-                  <div class="text-sm font-medium text-gray-900">{{ index + 1 }}</div>
+                  <div class="text-sm font-medium text-gray-900">{{ paginationInfo.start + index - 1 }}</div>
                 </td>
                 <td class="px-4 py-3 whitespace-nowrap">
                   <div class="text-sm font-medium text-gray-900">{{ medicine.name }}</div>
@@ -132,15 +142,49 @@
         <!-- Pagination -->
         <div v-if="filteredMedicines.length > 0" class="flex justify-between items-center mt-4 text-gray-500 text-sm">
           <div>
-            Showing <span class="font-medium">{{ filteredMedicines.length }}</span> medicines
+            Showing <span class="font-medium">{{ paginationInfo.start }}-{{ paginationInfo.end }}</span> of 
+            <span class="font-medium">{{ paginationInfo.total }}</span> medicines
             <span v-if="searchQuery" class="text-gray-400">(filtered from {{ medicines.length }} total)</span>
           </div>
           <div class="flex items-center gap-2">
-            <button class="bg-gray-100 px-3 py-1 rounded-md text-gray-500 disabled:opacity-50" disabled>
+            <button 
+              @click="goToPreviousPage"
+              :disabled="currentPage === 1"
+              class="bg-gray-100 px-3 py-1 rounded-md text-gray-500 disabled:opacity-50 hover:bg-gray-200 transition-colors"
+              :class="{ 'cursor-not-allowed': currentPage === 1 }">
               <span class="material-icons text-sm">chevron_left</span>
             </button>
-            <button class="bg-[#800000] px-3 py-1 rounded-md text-white">1</button>
-            <button class="bg-gray-100 px-3 py-1 rounded-md text-gray-500 disabled:opacity-50" disabled>
+            
+            <!-- Page numbers -->
+            <div class="flex items-center gap-1">
+              <button 
+                v-for="page in Math.min(5, totalPages)" 
+                :key="page"
+                @click="goToPage(page)"
+                class="px-3 py-1 rounded-md transition-colors"
+                :class="page === currentPage 
+                  ? 'bg-[#800000] text-white' 
+                  : 'bg-gray-100 text-gray-500 hover:bg-gray-200'">
+                {{ page }}
+              </button>
+              
+              <!-- Show ellipsis if there are more than 5 pages -->
+              <span v-if="totalPages > 5" class="px-2 text-gray-400">...</span>
+              
+              <!-- Show last page if it's not in the first 5 -->
+              <button 
+                v-if="totalPages > 5 && currentPage < totalPages - 2"
+                @click="goToPage(totalPages)"
+                class="px-3 py-1 rounded-md bg-gray-100 text-gray-500 hover:bg-gray-200 transition-colors">
+                {{ totalPages }}
+              </button>
+            </div>
+            
+            <button 
+              @click="goToNextPage"
+              :disabled="currentPage === totalPages"
+              class="bg-gray-100 px-3 py-1 rounded-md text-gray-500 disabled:opacity-50 hover:bg-gray-200 transition-colors"
+              :class="{ 'cursor-not-allowed': currentPage === totalPages }">
               <span class="material-icons text-sm">chevron_right</span>
             </button>
           </div>
@@ -389,10 +433,11 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted, computed, watch } from 'vue'
 import { getDatabase, ref as dbRef, push, set, onValue, get, update, remove } from 'firebase/database'
 import { app } from '../firebase'
 import { useAuthStore } from '../stores/auth'
+import { useRoute } from 'vue-router'
 
 interface Medicine {
   id: string
@@ -404,23 +449,97 @@ interface Medicine {
 }
 
 const authStore = useAuthStore()
+const route = useRoute()
 const db = getDatabase(app)
 const medicines = ref<Medicine[]>([])
 const loading = ref(false)
 const error = ref('')
 const searchQuery = ref('')
+const expiryFilter = ref('')
+
+// Pagination state
+const currentPage = ref(1)
+const itemsPerPage = ref(10)
+
+// Helper function to check if medicine is expired
+const isExpired = (expirationDate: string) => {
+  if (!expirationDate) return false
+  const today = new Date()
+  const expiryDate = new Date(expirationDate + '-01') // Add day to make it first of month
+  return expiryDate <= today
+}
+
+// Helper function to check if medicine expires within a certain period
+const isExpiringWithin = (expirationDate: string, months: number) => {
+  if (!expirationDate) return false
+  const today = new Date()
+  const futureDate = new Date(today.getFullYear(), today.getMonth() + months, today.getDate())
+  const expiryDate = new Date(expirationDate + '-01')
+  return expiryDate > today && expiryDate <= futureDate
+}
 
 // Add computed property for filtered medicines
 const filteredMedicines = computed(() => {
-  if (!searchQuery.value) return medicines.value
-  
-  const query = searchQuery.value.toLowerCase()
-  return medicines.value.filter(medicine => 
-    medicine.name.toLowerCase().includes(query) ||
-    (medicine.dosage && medicine.dosage.toLowerCase().includes(query)) ||
-    (medicine.form && medicine.form.toLowerCase().includes(query)) ||
-    (medicine.quantity && medicine.quantity.toString().includes(query))
-  )
+  let filtered = medicines.value
+
+  // Apply search filter
+  if (searchQuery.value) {
+    const query = searchQuery.value.toLowerCase()
+    filtered = filtered.filter(medicine => 
+      medicine.name.toLowerCase().includes(query) ||
+      (medicine.dosage && medicine.dosage.toLowerCase().includes(query)) ||
+      (medicine.form && medicine.form.toLowerCase().includes(query)) ||
+      (medicine.quantity && medicine.quantity.toString().includes(query))
+    )
+  }
+
+  // Apply expiry filter
+  if (expiryFilter.value) {
+    filtered = filtered.filter(medicine => {
+      switch (expiryFilter.value) {
+        case 'expired':
+          return isExpired(medicine.expirationDate)
+        case 'expiring-in-1-month':
+          return isExpiringWithin(medicine.expirationDate, 1)
+        case 'expiring-in-2-months':
+          return isExpiringWithin(medicine.expirationDate, 2)
+        case 'expiring-in-3-months':
+          return isExpiringWithin(medicine.expirationDate, 3)
+        case 'safe-stock':
+          return !isExpired(medicine.expirationDate) && !isExpiringWithin(medicine.expirationDate, 3)
+        default:
+          return true
+      }
+    })
+  }
+
+  return filtered
+})
+
+// Watch for route changes to set expiry filter
+watch(() => route.query.filter, (newFilter) => {
+  if (newFilter && typeof newFilter === 'string') {
+    expiryFilter.value = newFilter
+  } else {
+    expiryFilter.value = ''
+  }
+}, { immediate: true })
+
+// Pagination computed properties
+const totalPages = computed(() => {
+  return Math.ceil(filteredMedicines.value.length / itemsPerPage.value)
+})
+
+const paginatedMedicines = computed(() => {
+  const start = (currentPage.value - 1) * itemsPerPage.value
+  const end = start + itemsPerPage.value
+  return filteredMedicines.value.slice(start, end)
+})
+
+const paginationInfo = computed(() => {
+  const start = (currentPage.value - 1) * itemsPerPage.value + 1
+  const end = Math.min(currentPage.value * itemsPerPage.value, filteredMedicines.value.length)
+  return { start, end, total: filteredMedicines.value.length }
 })
 
 const formData = ref({
@@ -603,6 +722,33 @@ const cancelDelete = () => {
   showDeleteConfirm.value = false
   medicineToDelete.value = null
 }
+
+// Pagination navigation functions
+const goToPage = (page: number) => {
+  if (page >= 1 && page <= totalPages.value) {
+    currentPage.value = page
+  }
+}
+
+const goToPreviousPage = () => {
+  if (currentPage.value > 1) {
+    currentPage.value--
+  }
+}
+
+const goToNextPage = () => {
+  if (currentPage.value < totalPages.value) {
+    currentPage.value++
+  }
+}
+
+// Reset to first page when search query changes
+const resetPagination = () => {
+  currentPage.value = 1
+}
+
+// Watch for search query changes to reset pagination
+watch(searchQuery, resetPagination)
 
 // Check if expiration date is close or passed
 const getExpirationClass = (expirationDate: string) => {

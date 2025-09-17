@@ -6,6 +6,8 @@ import NewPrescriptionView from '../views/NewPrescriptionView.vue'
 import PatientView from '../views/PatientView.vue'
 import PatientHistoryView from '../views/PatientHistoryView.vue'
 import AddMedicineView from '../views/MedicineView.vue'
+import VisitLogsView from '../views/VisitLogsView.vue'
+import MedicineDispensedView from '../views/MedicineDispensedView.vue'
 
 import ReportsView from '../views/ReportsView.vue'
 import UsersView from '../views/UsersView.vue'
@@ -50,6 +52,16 @@ const router = createRouter({
           path: 'users',
           name: 'users',
           component: UsersView,
+        },
+        {
+          path: 'visit-logs',
+          name: 'visit-logs',
+          component: VisitLogsView,
+        },
+        {
+          path: 'medicine-dispensed',
+          name: 'medicine-dispensed',
+          component: MedicineDispensedView,
         },
         // Add more children here for other sections
       ],

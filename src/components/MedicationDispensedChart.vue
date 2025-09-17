@@ -1,6 +1,6 @@
 <template>
   <div class="bg-white rounded-lg shadow-md p-4">
-    <h3 class="text-lg font-semibold text-gray-700 mb-2">Medications Dispensed by Type</h3>
+    <h3 class="text-lg font-semibold text-gray-700 mb-2">Medications Dispensed by Medicine</h3>
     <div class="h-[300px]">
       <canvas ref="dispensedChart"></canvas>
     </div>
@@ -20,77 +20,119 @@ export default {
     const dispensedChart = ref<HTMLCanvasElement | null>(null)
     let chartInstance: Chart | null = null
     const medicationData = ref<number[]>([])
-    const medicationTypes = [
-      'Pain Relievers',
-      'Antibiotics',
-      'Antihistamines',
-      'Antacids',
-      'Anti-inflammatory',
-      'Other'
-    ]
+    const medicineNames = ref<string[]>([])
 
     const generateDummyData = () => {
-      // Generate random numbers between 5 and 30 for each medication type
-      return Array.from({ length: medicationTypes.length }, () => Math.floor(Math.random() * 26) + 5)
+      // Generate dummy medicine names and quantities
+      const dummyMedicines = [
+        'Paracetamol', 'Ibuprofen', 'Amoxicillin', 'Cetirizine', 
+        'Omeprazole', 'Aspirin', 'Loratadine', 'Metformin'
+      ]
+      return {
+        names: dummyMedicines,
+        quantities: dummyMedicines.map(() => Math.floor(Math.random() * 20) + 5)
+      }
     }
 
     const fetchMedicationData = () => {
-      const medicationsRef = dbRef(db, 'medications-dispensed')
-      onValue(medicationsRef, (snapshot) => {
+      const dispensesRef = dbRef(db, 'dispenses')
+      onValue(dispensesRef, (snapshot) => {
         const data = snapshot.val()
         if (data) {
-          // Initialize counts for each medication type
-          const typeCounts = new Array(medicationTypes.length).fill(0)
+          // Count medicines by name and quantity
+          const medicineCounts: { [key: string]: number } = {}
           
-          // Count medications by type
-          Object.values(data).forEach((medication: any) => {
-            const type = medication.type
-            const index = medicationTypes.indexOf(type)
-            if (index !== -1) {
-              typeCounts[index]++
-            } else {
-              // If type is not in our predefined list, count it as "Other"
-              typeCounts[typeCounts.length - 1]++
+          // Process each dispense record
+          Object.values(data).forEach((dispense: any) => {
+            if (dispense.medicines && Array.isArray(dispense.medicines)) {
+              dispense.medicines.forEach((medicine: any) => {
+                const medicineName = medicine.medicineName
+                const quantity = medicine.quantity || 1
+                
+                if (medicineCounts[medicineName]) {
+                  medicineCounts[medicineName] += quantity
+                } else {
+                  medicineCounts[medicineName] = quantity
+                }
+              })
             }
           })
           
-          medicationData.value = typeCounts
+          // Convert to arrays for chart
+          const names = Object.keys(medicineCounts)
+          const quantities = Object.values(medicineCounts)
+          
+          // Sort by quantity (descending) and limit to top 10 medicines
+          const sortedData = names
+            .map((name, index) => ({ name, quantity: quantities[index] }))
+            .sort((a, b) => b.quantity - a.quantity)
+            .slice(0, 10)
+          
+          medicineNames.value = sortedData.map(item => item.name)
+          medicationData.value = sortedData.map(item => item.quantity)
         } else {
           // Use dummy data if no Firebase data is available
-          medicationData.value = generateDummyData()
+          const dummyData = generateDummyData()
+          medicineNames.value = dummyData.names
+          medicationData.value = dummyData.quantities
         }
         updateChart()
       }, (error) => {
         // Use dummy data if there's an error fetching from Firebase
-        console.error('Error fetching medication data:', error)
-        medicationData.value = generateDummyData()
+        console.error('Error fetching dispense data:', error)
+        const dummyData = generateDummyData()
+        medicineNames.value = dummyData.names
+        medicationData.value = dummyData.quantities
         updateChart()
       })
     }
 
     const updateChart = () => {
       if (chartInstance && dispensedChart.value) {
+        // Generate colors dynamically based on number of medicines
+        const generateColors = (count: number) => {
+          const baseColors = [
+            '#4CAF50', '#2196F3', '#FFC107', '#9C27B0', '#FF5722', 
+            '#607D8B', '#E91E63', '#00BCD4', '#8BC34A', '#FF9800',
+            '#795548', '#9E9E9E', '#3F51B5', '#009688', '#CDDC39'
+          ]
+          const colors = []
+          for (let i = 0; i < count; i++) {
+            colors.push(baseColors[i % baseColors.length])
+          }
+          return colors
+        }
+
+        chartInstance.data.labels = medicineNames.value
         chartInstance.data.datasets[0].data = medicationData.value
+        chartInstance.data.datasets[0].backgroundColor = generateColors(medicineNames.value.length)
         chartInstance.update()
       }
     }
 
     const initializeDispensedChart = () => {
       if (dispensedChart.value) {
+        // Generate colors dynamically based on number of medicines
+        const generateColors = (count: number) => {
+          const baseColors = [
+            '#4CAF50', '#2196F3', '#FFC107', '#9C27B0', '#FF5722', 
+            '#607D8B', '#E91E63', '#00BCD4', '#8BC34A', '#FF9800',
+            '#795548', '#9E9E9E', '#3F51B5', '#009688', '#CDDC39'
+          ]
+          const colors = []
+          for (let i = 0; i < count; i++) {
+            colors.push(baseColors[i % baseColors.length])
+          }
+          return colors
+        }
+
         chartInstance = new Chart(dispensedChart.value, {
           type: 'doughnut',
           data: {
-            labels: medicationTypes,
+            labels: medicineNames.value,
             datasets: [{
               data: medicationData.value,
-              backgroundColor: [
-                '#4CAF50', // Green
-                '#2196F3', // Blue
-                '#FFC107', // Yellow
-                '#9C27B0', // Purple
-                '#FF5722', // Orange
-                '#607D8B'  // Grey
-              ],
+              backgroundColor: generateColors(medicineNames.value.length),
               borderWidth: 2,
               borderColor: '#fff'
             }]
@@ -101,7 +143,7 @@ export default {
             plugins: {
               title: {
                 display: true,
-                text: 'Distribution of Medications Dispensed',
+                text: 'Top Medicines Dispensed',
                 font: {
                   size: 16
                 }
@@ -122,7 +164,7 @@ export default {
                     const value = context.raw as number;
                     const total = context.dataset.data.reduce((a: number, b: number) => a + b, 0);
                     const percentage = Math.round((value / total) * 100);
-                    return `${label}: ${value} (${percentage}%)`;
+                    return `${label}: ${value} units (${percentage}%)`;
                   }
                 }
               }

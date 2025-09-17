@@ -18,7 +18,7 @@
     </div>
 
     <!-- Reports Cards -->
-    <div class="grid grid-cols-1 gap-6">
+    <div class="grid grid-cols-2 gap-6">
       <!-- Patient Visits Report Card -->
       <div class="bg-white rounded-xl shadow-md overflow-hidden">
         <div class="bg-[#800000] px-6 py-4">
@@ -61,78 +61,42 @@
               </div>
             </div>
 
-            <!-- Error Message -->
-            <div v-if="visitsError" class="p-3 bg-red-100 border-l-4 border-red-500 text-red-700 rounded">
-              <div class="flex items-center gap-2">
-                <span class="material-icons text-red-500">error</span>
-                <span>{{ visitsError }}</span>
-              </div>
-            </div>
 
-            <!-- Success Message -->
-            <div v-if="visitsSuccess" class="p-3 bg-green-100 border-l-4 border-green-500 text-green-700 rounded">
-              <div class="flex items-center gap-2">
-                <span class="material-icons text-green-500">check_circle</span>
-                <span>{{ visitsSuccess }}</span>
-              </div>
-            </div>
 
             <div class="flex justify-end gap-3 pt-4 border-t">
               <button type="submit"
                 class="bg-[#800000] hover:bg-[#600000] text-white px-6 py-2.5 rounded-lg font-medium flex items-center gap-2 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-md"
                 :disabled="visitsLoading">
-                <span class="material-icons text-base">{{ visitsLoading ? 'hourglass_top' : 'picture_as_pdf' }}</span>
-                {{ visitsLoading ? 'Generating...' : 'Generate PDF Report' }}
+                <span class="material-icons text-base">{{ visitsLoading ? 'hourglass_top' : 'print' }}</span>
+                {{ visitsLoading ? 'Generating...' : 'Print Report' }}
               </button>
             </div>
           </form>
         </div>
       </div>
 
-      <!-- Disease Report Card -->
+      <!-- Medicine Inventory Report Card -->
       <div class="bg-white rounded-xl shadow-md overflow-hidden">
         <div class="bg-[#800000] px-6 py-4">
           <h2 class="text-xl text-white font-semibold flex items-center gap-2">
-            <span class="material-icons">coronavirus</span>
-            Disease Based Report
+            <span class="material-icons">inventory_2</span>
+            Medicine Inventory Report
           </h2>
         </div>
         <div class="p-6">
-          <form @submit.prevent="generateDiseaseReport" class="space-y-4">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div class="w-full">
-                <label class="block text-gray-700 font-medium mb-2">Disease/Condition <span class="text-red-500">*</span></label>
-                <div class="relative">
-                  <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                    <span class="material-icons text-gray-500">medical_services</span>
-                  </div>
-                  <select v-model="diseaseReport.disease"
-                    class="w-full bg-gray-50 border border-gray-300 rounded-lg px-3 py-2.5 pl-10 focus:ring-2 focus:ring-[#800000] focus:border-[#800000] outline-none transition-all appearance-none"
-                    required 
-                    :disabled="diseaseLoading">
-                    <option value="">Select disease/condition</option>
-                    <option v-for="disease in diseases" :key="disease" :value="disease">
-                      {{ disease }}
-                    </option>
-                  </select>
-                  <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                    <span class="material-icons text-gray-500">expand_more</span>
-                  </div>
-                </div>
-              </div>
-
+          <form @submit.prevent="generateMedicineInventoryReport" class="space-y-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div class="w-full">
                 <label class="block text-gray-700 font-medium mb-2">Start Date <span class="text-red-500">*</span></label>
                 <div class="relative">
                   <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                     <span class="material-icons text-gray-500">calendar_today</span>
                   </div>
-                  <input v-model="diseaseReport.startDate"
+                  <input v-model="medicineInventoryReport.startDate"
                     class="w-full bg-gray-50 border border-gray-300 rounded-lg px-3 py-2.5 pl-10 focus:ring-2 focus:ring-[#800000] focus:border-[#800000] outline-none transition-all"
                     type="date" 
-                    required 
-                    :disabled="diseaseLoading"
-                    :max="diseaseReport.endDate || undefined" />
+                    :disabled="medicineInventoryLoading"
+                    :max="medicineInventoryReport.endDate || undefined" />
                 </div>
               </div>
 
@@ -142,38 +106,23 @@
                   <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                     <span class="material-icons text-gray-500">calendar_today</span>
                   </div>
-                  <input v-model="diseaseReport.endDate"
+                  <input v-model="medicineInventoryReport.endDate"
                     class="w-full bg-gray-50 border border-gray-300 rounded-lg px-3 py-2.5 pl-10 focus:ring-2 focus:ring-[#800000] focus:border-[#800000] outline-none transition-all"
                     type="date" 
-                    required 
-                    :disabled="diseaseLoading"
-                    :min="diseaseReport.startDate || undefined" />
+                    :disabled="medicineInventoryLoading"
+                    :min="medicineInventoryReport.startDate || undefined" />
                 </div>
               </div>
             </div>
 
-            <!-- Error Message -->
-            <div v-if="diseaseError" class="p-3 bg-red-100 border-l-4 border-red-500 text-red-700 rounded">
-              <div class="flex items-center gap-2">
-                <span class="material-icons text-red-500">error</span>
-                <span>{{ diseaseError }}</span>
-              </div>
-            </div>
 
-            <!-- Success Message -->
-            <div v-if="diseaseSuccess" class="p-3 bg-green-100 border-l-4 border-green-500 text-green-700 rounded">
-              <div class="flex items-center gap-2">
-                <span class="material-icons text-green-500">check_circle</span>
-                <span>{{ diseaseSuccess }}</span>
-              </div>
-            </div>
 
             <div class="flex justify-end gap-3 pt-4 border-t">
               <button type="submit"
                 class="bg-[#800000] hover:bg-[#600000] text-white px-6 py-2.5 rounded-lg font-medium flex items-center gap-2 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-md"
-                :disabled="diseaseLoading">
-                <span class="material-icons text-base">{{ diseaseLoading ? 'hourglass_top' : 'picture_as_pdf' }}</span>
-                {{ diseaseLoading ? 'Generating...' : 'Generate PDF Report' }}
+                :disabled="medicineInventoryLoading">
+                <span class="material-icons text-base">{{ medicineInventoryLoading ? 'hourglass_top' : 'print' }}</span>
+                {{ medicineInventoryLoading ? 'Generating...' : 'Print Inventory Report' }}
               </button>
             </div>
           </form>
@@ -201,29 +150,93 @@ const visitsLoading = ref(false)
 const visitsError = ref('')
 const visitsSuccess = ref('')
 
-// Disease Report State
-const diseaseReport = ref({
-  disease: '',
+// Medicine Inventory Report State
+const medicineInventoryReport = ref({
   startDate: '',
   endDate: ''
 })
-const diseaseLoading = ref(false)
-const diseaseError = ref('')
-const diseaseSuccess = ref('')
+const medicineInventoryLoading = ref(false)
+const medicineInventoryError = ref('')
+const medicineInventorySuccess = ref('')
 
-// Sample diseases list - you should fetch this from your database
-const diseases = [
-  'Common Cold',
-  'Flu',
-  'Fever',
-  'Headache',
-  'Stomach Ache',
-  'Dental Issues',
-  'Eye Problems',
-  'Skin Conditions',
-  'Respiratory Issues',
-  'Other'
-]
+// Removed single-medicine filter; report is date-range based
+
+// Utilities for date formatting
+const formatDate = (d: Date) => {
+  const yyyy = d.getFullYear()
+  const mm = String(d.getMonth() + 1).padStart(2, '0')
+  const dd = String(d.getDate()).padStart(2, '0')
+  return `${yyyy}-${mm}-${dd}`
+}
+
+const formatDateTime = (value?: string) => {
+  if (!value) return ''
+  
+  // Since the timestamp is stored as Philippine time but with 'Z' suffix,
+  // we need to parse it as if it's already in local time
+  // Remove the 'Z' and parse as local time
+  const localTimeString = value.replace('Z', '')
+  const d = new Date(localTimeString)
+  if (isNaN(d.getTime())) return ''
+  
+  const yyyy = d.getFullYear()
+  const mm = String(d.getMonth() + 1).padStart(2, '0')
+  const dd = String(d.getDate()).padStart(2, '0')
+  const hh = String(d.getHours()).padStart(2, '0')
+  const mi = String(d.getMinutes()).padStart(2, '0')
+  
+  return `${yyyy}-${mm}-${dd} ${hh}:${mi}`
+}
+
+// Print functionality
+const printReport = (title: string, content: string) => {
+  const printWindow = window.open('', '_blank')
+  if (!printWindow) return
+
+  printWindow.document.write(`
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <title>${title}</title>
+      <style>
+        @media print {
+          @page { margin: 0.5in; }
+          body { font-family: Arial, sans-serif; font-size: 12px; }
+          .header { background-color: #800000; color: white; padding: 20px; text-align: center; margin-bottom: 20px; }
+          .header h1 { margin: 0; font-size: 24px; }
+          .header .subtitle { margin: 5px 0 0 0; font-size: 14px; opacity: 0.9; }
+          .content { line-height: 1.6; }
+          .footer { margin-top: 30px; text-align: center; font-size: 10px; color: #666; }
+          table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+          th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+          th { background-color: #f5f5f5; font-weight: bold; }
+          .no-data { text-align: center; color: #666; font-style: italic; padding: 20px; }
+        }
+        @media screen {
+          body { font-family: Arial, sans-serif; font-size: 14px; margin: 20px; }
+          .header { background-color: #800000; color: white; padding: 20px; text-align: center; margin-bottom: 20px; }
+          .header h1 { margin: 0; font-size: 24px; }
+          .header .subtitle { margin: 5px 0 0 0; font-size: 14px; opacity: 0.9; }
+          .content { line-height: 1.6; }
+          .footer { margin-top: 30px; text-align: center; font-size: 10px; color: #666; }
+          table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+          th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+          th { background-color: #f5f5f5; font-weight: bold; }
+          .no-data { text-align: center; color: #666; font-style: italic; padding: 20px; }
+        }
+      </style>
+    </head>
+    <body>
+      ${content}
+    </body>
+    </html>
+  `)
+  
+  printWindow.document.close()
+  printWindow.focus()
+  printWindow.print()
+  printWindow.close()
+}
 
 // Validate dates
 const validateDates = (startDate: string, endDate: string) => {
@@ -266,11 +279,68 @@ const generateVisitsReport = async () => {
       return
     }
 
-    // TODO: Implement actual report generation logic here
-    // For now, we'll just simulate a delay
-    await new Promise(resolve => setTimeout(resolve, 1500))
+    // Fetch patient visits data from Firebase
+    const visitsRef = dbRef(db, 'clinic-visits')
+    const visitsSnap = await get(visitsRef)
+    const visitsData = visitsSnap.exists() ? visitsSnap.val() : {}
 
-    visitsSuccess.value = 'Report generated successfully!'
+    // Filter visits by date range
+    const startDate = new Date(visitsReport.value.startDate)
+    const endDate = new Date(visitsReport.value.endDate)
+    endDate.setHours(23, 59, 59, 999)
+
+    const filteredVisits = Object.entries(visitsData)
+      .map(([id, visit]: [string, any]) => ({ id, ...visit }))
+      .filter((visit: any) => {
+        const visitDate = new Date(visit.timestamp || visit.visitDate || visit.createdAt)
+        return visitDate >= startDate && visitDate <= endDate
+      })
+      .sort((a: any, b: any) => new Date(b.timestamp || b.visitDate || b.createdAt).getTime() - new Date(a.timestamp || a.visitDate || a.createdAt).getTime())
+
+    // Generate HTML content for printing
+    const reportContent = `
+      <div class="header">
+        <h1>Patient Visits Report</h1>
+        <div class="subtitle">Date Range: ${formatDate(startDate)} to ${formatDate(endDate)}</div>
+      </div>
+      <div class="content">
+        <p><strong>Total Visits:</strong> ${filteredVisits.length}</p>
+        <p><strong>Report Period:</strong> ${formatDate(startDate)} to ${formatDate(endDate)}</p>
+        <p><strong>Generated:</strong> ${formatDateTime(new Date().toISOString())}</p>
+        
+        ${filteredVisits.length > 0 ? `
+          <table>
+            <thead>
+              <tr>
+                <th>Visit ID</th>
+                <th>Patient Name</th>
+                <th>Visit Date</th>
+                <th>Reason</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${filteredVisits.map((visit: any) => `
+                <tr>
+                  <td>${visit.id || 'N/A'}</td>
+                  <td>${visit.patientName || 'N/A'}</td>
+                  <td>${formatDateTime(visit.timestamp || visit.visitDate || visit.createdAt)}</td>
+                  <td>${visit.reason || 'N/A'}</td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        ` : `
+          <div class="no-data">No visits found for the selected date range.</div>
+        `}
+      </div>
+      <div class="footer">
+        <p>Generated by DHVSU CMS on ${formatDateTime(new Date().toISOString())}</p>
+      </div>
+    `
+
+    // Print the report
+    printReport('Patient Visits Report', reportContent)
+    visitsSuccess.value = 'Report printed successfully!'
     
     // Reset form after success
     setTimeout(() => {
@@ -288,51 +358,116 @@ const generateVisitsReport = async () => {
   }
 }
 
-// Generate Disease Report
-const generateDiseaseReport = async () => {
+// Generate Medicine Inventory Report
+const generateMedicineInventoryReport = async () => {
   try {
-    // Validate dates
-    const dateError = validateDates(diseaseReport.value.startDate, diseaseReport.value.endDate)
-    if (dateError) {
-      diseaseError.value = dateError
-      return
+    // Validate dates only if both provided
+    if (medicineInventoryReport.value.startDate && medicineInventoryReport.value.endDate) {
+      const dateError = validateDates(medicineInventoryReport.value.startDate, medicineInventoryReport.value.endDate)
+      if (dateError) {
+        medicineInventoryError.value = dateError
+        return
+      }
     }
 
-    if (!diseaseReport.value.disease) {
-      diseaseError.value = 'Please select a disease/condition'
-      return
-    }
-
-    diseaseLoading.value = true
-    diseaseError.value = ''
-    diseaseSuccess.value = ''
+    medicineInventoryLoading.value = true
+    medicineInventoryError.value = ''
+    medicineInventorySuccess.value = ''
 
     const currentUser = authStore.getCurrentUser()
     if (!currentUser) {
-      diseaseError.value = 'You must be logged in to generate reports'
+      medicineInventoryError.value = 'You must be logged in to generate reports'
       return
     }
 
-    // TODO: Implement actual report generation logic here
-    // For now, we'll just simulate a delay
-    await new Promise(resolve => setTimeout(resolve, 1500))
+    // Compute date boundaries (inclusive) in ISO format
+    const start = medicineInventoryReport.value.startDate
+      ? new Date(medicineInventoryReport.value.startDate)
+      : new Date('1970-01-01T00:00:00Z')
+    start.setHours(0, 0, 0, 0)
+    const end = medicineInventoryReport.value.endDate
+      ? new Date(medicineInventoryReport.value.endDate)
+      : new Date('2999-12-31T23:59:59Z')
+    end.setHours(23, 59, 59, 999)
 
-    diseaseSuccess.value = 'Report generated successfully!'
+    // Fetch medicines from Firebase Realtime Database
+    const medicinesSnap = await get(dbRef(db, 'medicines'))
+    const medicinesMap = medicinesSnap.exists() ? medicinesSnap.val() : {}
+
+    const results = Object.entries(medicinesMap).map(([id, value]: [string, any]) => {
+      const record = value as any
+      return { id, ...record }
+    }).filter((record: any) => {
+      const dateStr: string | undefined = record.updatedAt || record.createdAt
+      if (!dateStr) return false
+      const recordDate = new Date(dateStr)
+      return recordDate >= start && recordDate <= end
+    }).sort((a: any, b: any) => (a.name || '').localeCompare(b.name || ''))
+
+    // Generate HTML content for printing
+    const reportContent = `
+      <div class="header">
+        <h1>Medicine Inventory Report</h1>
+        <div class="subtitle">Date Range: ${formatDate(start)} to ${formatDate(end)}</div>
+      </div>
+      <div class="content">
+        <p><strong>Total Medicines:</strong> ${results.length}</p>
+        <p><strong>Report Period:</strong> ${formatDate(start)} to ${formatDate(end)}</p>
+        <p><strong>Generated:</strong> ${formatDateTime(new Date().toISOString())}</p>
+        
+        ${results.length > 0 ? `
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Dosage</th>
+                <th>Form</th>
+                <th>Quantity</th>
+                <th>Expiry Date</th>
+                <th>Last Updated</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${results.map((medicine: any) => `
+                <tr>
+                  <td>${medicine.id || 'N/A'}</td>
+                  <td>${medicine.name || 'N/A'}</td>
+                  <td>${medicine.dosage || 'N/A'}</td>
+                  <td>${medicine.form || 'N/A'}</td>
+                  <td>${medicine.quantity || 'N/A'}</td>
+                  <td>${medicine.expirationDate || 'N/A'}</td>
+                  <td>${formatDateTime(medicine.updatedAt || medicine.createdAt)}</td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        ` : `
+          <div class="no-data">No medicines found for the selected date range.</div>
+        `}
+      </div>
+      <div class="footer">
+        <p>Generated by DHVSU CMS on ${formatDateTime(new Date().toISOString())}</p>
+      </div>
+    `
+
+    // Print the report
+    printReport('Medicine Inventory Report', reportContent)
+    medicineInventorySuccess.value = 'Report printed successfully!'
     
     // Reset form after success
     setTimeout(() => {
-      diseaseReport.value = {
-        disease: '',
+      medicineInventoryReport.value = {
         startDate: '',
         endDate: ''
       }
-      diseaseSuccess.value = ''
+      medicineInventorySuccess.value = ''
     }, 2000)
 
   } catch (err: any) {
-    diseaseError.value = err.message || 'Failed to generate report'
+    medicineInventoryError.value = err.message || 'Failed to generate inventory report'
   } finally {
-    diseaseLoading.value = false
+    medicineInventoryLoading.value = false
   }
 }
 </script>

@@ -12,15 +12,18 @@ import { ref, onMounted, onUnmounted } from 'vue'
 import { getDatabase, ref as dbRef, onValue } from 'firebase/database'
 import { app } from '../firebase'
 import Chart from 'chart.js/auto'
+import { useRouter } from 'vue-router'
 
 export default {
   name: 'MedicationExpiryChart',
   setup() {
     const db = getDatabase(app)
+    const router = useRouter()
     const expiryChart = ref<HTMLCanvasElement | null>(null)
     let chartInstance: Chart | null = null
     const expiryData = ref<number[]>([])
     const expiryLabels = [
+      'Expired',
       'Expiring in 1 Month',
       'Expiring in 2 Months',
       'Expiring in 3 Months',
@@ -31,6 +34,7 @@ export default {
       // Generate random numbers between 5 and 50 for each expiry category
       // Make expiring soon categories have higher numbers to simulate urgency
       return [
+        Math.floor(Math.random() * 16) + 5,  // Expired (5-20)
         Math.floor(Math.random() * 46) + 5,  // Expiring in 1 month (5-50)
         Math.floor(Math.random() * 41) + 10, // Expiring in 2 months (10-50)
         Math.floor(Math.random() * 36) + 15, // Expiring in 3 months (15-50)
@@ -39,32 +43,69 @@ export default {
     }
 
     const fetchExpiryData = () => {
-      const medicationsRef = dbRef(db, 'medications')
+      const medicationsRef = dbRef(db, 'medicines')
       onValue(medicationsRef, (snapshot) => {
         const data = snapshot.val()
         if (data) {
-          // Initialize counts for each expiry category
-          const expiryCounts = new Array(4).fill(0)
+          // Initialize counts for each expiry category (now 5 categories including expired)
+          const expiryCounts = new Array(5).fill(0)
           const now = new Date()
           const oneMonthFromNow = new Date(now.getFullYear(), now.getMonth() + 1, now.getDate())
           const twoMonthsFromNow = new Date(now.getFullYear(), now.getMonth() + 2, now.getDate())
           const threeMonthsFromNow = new Date(now.getFullYear(), now.getMonth() + 3, now.getDate())
           
+          // Debug: Log current date and sample medication data
+          console.log('Current date:', now.toISOString())
+          console.log('Sample medication data:', Object.values(data)[0])
+          
           // Count medications by expiry date
           Object.values(data).forEach((medication: any) => {
-            const expiryDate = new Date(medication.expiryDate)
+            // Check for different possible field names for expiry date
+            const expiryDateString = medication.expirationDate || medication.expiryDate || medication.expiry
             const quantity = medication.quantity || 1
 
-            if (expiryDate <= oneMonthFromNow) {
-              expiryCounts[0] += quantity // Expiring in 1 month
-            } else if (expiryDate <= twoMonthsFromNow) {
-              expiryCounts[1] += quantity // Expiring in 2 months
-            } else if (expiryDate <= threeMonthsFromNow) {
-              expiryCounts[2] += quantity // Expiring in 3 months
+            if (!expiryDateString) {
+              // If no expiry date, consider it safe stock
+              expiryCounts[4] += quantity
+              return
+            }
+
+            // Debug: Log expiry date processing
+            console.log('Processing medication:', medication.name, 'Expiry:', expiryDateString)
+
+            // Parse the expiry date - handle different formats
+            let expiryDate: Date
+            if (expiryDateString.includes('-') && !expiryDateString.includes('T')) {
+              // Format like "2024-12" - add day to make it first of month
+              expiryDate = new Date(expiryDateString + '-01')
             } else {
-              expiryCounts[3] += quantity // Safe stock
+              // Try parsing as is
+              expiryDate = new Date(expiryDateString)
+            }
+
+            // Check if date is valid
+            if (isNaN(expiryDate.getTime())) {
+              // Invalid date, consider it safe stock
+              expiryCounts[4] += quantity
+              return
+            }
+
+            if (expiryDate <= now) {
+              expiryCounts[0] += quantity // Expired
+            } else if (expiryDate <= oneMonthFromNow) {
+              expiryCounts[1] += quantity // Expiring in 1 month
+            } else if (expiryDate <= twoMonthsFromNow) {
+              expiryCounts[2] += quantity // Expiring in 2 months
+            } else if (expiryDate <= threeMonthsFromNow) {
+              expiryCounts[3] += quantity // Expiring in 3 months
+            } else {
+              expiryCounts[4] += quantity // Safe stock
             }
           })
+          
+          // Debug: Log final counts
+          console.log('Expiry counts:', expiryCounts)
+          console.log('Categories:', ['Expired', '1 Month', '2 Months', '3 Months', 'Safe Stock'])
           
           expiryData.value = expiryCounts
         } else {
@@ -87,6 +128,22 @@ export default {
       }
     }
 
+    const handleChartClick = (event: any) => {
+      if (chartInstance) {
+        const activePoints = chartInstance.getElementsAtEventForMode(event, 'nearest', { intersect: true }, true)
+        if (activePoints.length > 0) {
+          const clickedIndex = activePoints[0].index
+          const category = expiryLabels[clickedIndex]
+          
+          // Navigate to medicine view with filter parameter
+          router.push({
+            name: 'medicines',
+            query: { filter: category.toLowerCase().replace(/\s+/g, '-') }
+          })
+        }
+      }
+    }
+
     const initializeExpiryChart = () => {
       if (expiryChart.value) {
         chartInstance = new Chart(expiryChart.value, {
@@ -96,7 +153,8 @@ export default {
             datasets: [{
               data: expiryData.value,
               backgroundColor: [
-                '#F44336', // Red for immediate expiry
+                '#8B0000', // Dark maroon for expired
+                '#FF1744', // Bright red for expiring in 1 month
                 '#FF9800', // Orange for 2 months
                 '#FFC107', // Yellow for 3 months
                 '#4CAF50'  // Green for safe
@@ -108,10 +166,16 @@ export default {
           options: {
             responsive: true,
             maintainAspectRatio: false,
+            onClick: handleChartClick,
+            onHover: (event: any, activeElements: any[]) => {
+              if (event.native && expiryChart.value) {
+                expiryChart.value.style.cursor = activeElements.length > 0 ? 'pointer' : 'default'
+              }
+            },
             plugins: {
               title: {
                 display: true,
-                text: 'Medication Stock by Expiry Timeline',
+                text: 'Medication Stock by Expiry Timeline (Click to filter)',
                 font: {
                   size: 16
                 }
@@ -132,7 +196,7 @@ export default {
                     const value = context.raw as number;
                     const total = context.dataset.data.reduce((a: number, b: number) => a + b, 0);
                     const percentage = Math.round((value / total) * 100);
-                    return `${label}: ${value} units (${percentage}%)`;
+                    return `${label}: ${value} units (${percentage}%) - Click to view details`;
                   }
                 }
               }

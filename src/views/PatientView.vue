@@ -7,8 +7,8 @@
         <p class="text-gray-600 mt-1">Add, edit and manage patient records</p>
       </div>
       <div class="flex items-center gap-4">
-        <div class="bg-white px-4 py-2 rounded-lg shadow flex items-center gap-2">
-          <span class="material-icons text-[#3973a5]">people</span>
+        <div class="bg-white px-4 py-2 rounded-lg shadow flex items-start gap-2">
+  
           <div>
             <div class="text-sm text-gray-500">Total Patients</div>
             <div class="font-bold text-lg">{{ patients.length }}</div>
@@ -92,14 +92,10 @@
                   </span>
                 </td>
                 <td class="px-4 py-3 whitespace-nowrap text-sm font-medium">
-                  <div class="flex gap-2">
-                    <button @click="openEditModal(patient)"
-                      class="bg-blue-50 text-blue-600 hover:bg-blue-100 rounded p-1.5 transition-colors">
-                      <span class="material-icons text-base">edit</span>
-                    </button>
-                    <button @click="removePatient(patient)"
-                      class="bg-red-50 text-red-600 hover:bg-red-100 rounded p-1.5 transition-colors">
-                      <span class="material-icons text-base">delete</span>
+                  <div @click.stop>
+                    <button @click="(e) => toggleActionMenu(patient.id, e)"
+                      class="bg-gray-50 hover:bg-gray-100 text-gray-700 rounded p-1.5 transition-colors">
+                      <span class="material-icons">more_vert</span>
                     </button>
                   </div>
                 </td>
@@ -162,7 +158,7 @@
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
               <div class="w-full">
-                <label class="block text-gray-700 font-medium mb-2">Student ID Number <span class="text-red-500">*</span></label>
+                <label class="block text-gray-700 font-medium mb-2">ID Number <span class="text-red-500">*</span></label>
                 <div class="relative">
                   <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                     <span class="material-icons text-gray-500">badge</span>
@@ -170,7 +166,7 @@
                   <input v-model="formData.studentId"
                     class="w-full bg-gray-50 border border-gray-300 rounded-lg px-3 py-2.5 pl-10 focus:ring-2 focus:ring-[#3973a5] focus:border-[#3973a5] outline-none transition-all"
                     type="text" 
-                    placeholder="Enter student ID number" 
+                    placeholder="Enter ID number" 
                     required 
                     :disabled="loading"
                     @input="formData.studentId = formData.studentId.toUpperCase()" />
@@ -281,7 +277,7 @@
       class="fixed inset-0 backdrop-blur-md bg-gray-900/50 flex items-center justify-center z-50 transition-all duration-300">
       <div
         class="bg-white/90 backdrop-filter backdrop-blur-sm rounded-xl p-0 w-full max-w-3xl shadow-xl border border-white/20">
-        <div class="bg-[#3973a5]/90 backdrop-filter backdrop-blur-sm px-6 py-4 rounded-t-xl">
+        <div class="bg-[#800000]/90 backdrop-filter backdrop-blur-sm px-6 py-4 rounded-t-xl">
           <div class="flex justify-between items-center">
             <h3 class="text-xl text-white font-semibold flex items-center gap-2">
               <span class="material-icons">edit</span>
@@ -298,37 +294,37 @@
               <div>
                 <label class="block text-gray-700 font-medium mb-2">Student ID Number</label>
                 <input v-model="editForm.studentId"
-                  class="w-full bg-gray-50 border border-gray-300 rounded-lg px-3 py-2.5 focus:ring-2 focus:ring-[#3973a5] focus:border-[#3973a5] outline-none transition-all"
+                  class="w-full bg-gray-50 border border-gray-300 rounded-lg px-3 py-2.5 focus:ring-2 focus:ring-[#800000] focus:border-[#800000] outline-none transition-all"
                   type="text" required />
               </div>
               <div>
                 <label class="block text-gray-700 font-medium mb-2">Patient Name</label>
                 <input v-model="editForm.name"
-                  class="w-full bg-gray-50 border border-gray-300 rounded-lg px-3 py-2.5 focus:ring-2 focus:ring-[#3973a5] focus:border-[#3973a5] outline-none transition-all"
+                  class="w-full bg-gray-50 border border-gray-300 rounded-lg px-3 py-2.5 focus:ring-2 focus:ring-[#800000] focus:border-[#800000] outline-none transition-all"
                   type="text" required />
               </div>
               <div>
                 <label class="block text-gray-700 font-medium mb-2">Address</label>
                 <input v-model="editForm.address"
-                  class="w-full bg-gray-50 border border-gray-300 rounded-lg px-3 py-2.5 focus:ring-2 focus:ring-[#3973a5] focus:border-[#3973a5] outline-none transition-all"
+                  class="w-full bg-gray-50 border border-gray-300 rounded-lg px-3 py-2.5 focus:ring-2 focus:ring-[#800000] focus:border-[#800000] outline-none transition-all"
                   type="text" required />
               </div>
               <div>
                 <label class="block text-gray-700 font-medium mb-2">Date of Birth</label>
                 <input v-model="editForm.dateOfBirth"
-                  class="w-full bg-gray-50 border border-gray-300 rounded-lg px-3 py-2.5 focus:ring-2 focus:ring-[#3973a5] focus:border-[#3973a5] outline-none transition-all"
+                  class="w-full bg-gray-50 border border-gray-300 rounded-lg px-3 py-2.5 focus:ring-2 focus:ring-[#800000] focus:border-[#800000] outline-none transition-all"
                   type="date" required />
               </div>
               <div>
                 <label class="block text-gray-700 font-medium mb-2">Phone Number</label>
                 <input v-model="editForm.phoneNumber"
-                  class="w-full bg-gray-50 border border-gray-300 rounded-lg px-3 py-2.5 focus:ring-2 focus:ring-[#3973a5] focus:border-[#3973a5] outline-none transition-all"
+                  class="w-full bg-gray-50 border border-gray-300 rounded-lg px-3 py-2.5 focus:ring-2 focus:ring-[#800000] focus:border-[#800000] outline-none transition-all"
                   type="text" required />
               </div>
               <div>
                 <label class="block text-gray-700 font-medium mb-2">Gender</label>
                 <select v-model="editForm.gender"
-                  class="w-full bg-gray-50 border border-gray-300 rounded-lg px-3 py-2.5 focus:ring-2 focus:ring-[#3973a5] focus:border-[#3973a5] outline-none transition-all appearance-none"
+                  class="w-full bg-gray-50 border border-gray-300 rounded-lg px-3 py-2.5 focus:ring-2 focus:ring-[#800000] focus:border-[#800000] outline-none transition-all appearance-none"
                   required>
                   <option value="">Select gender</option>
                   <option value="Male">Male</option>
@@ -348,7 +344,7 @@
                 Cancel
               </button>
               <button type="submit"
-                class="bg-[#3973a5] hover:bg-[#2c5a84] text-white px-6 py-2.5 rounded-lg font-medium flex items-center gap-2 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                class="bg-[#800000] hover:bg-[#600000] text-white px-6 py-2.5 rounded-lg font-medium flex items-center gap-2 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                 :disabled="editLoading">
                 <span class="material-icons text-base">{{ editLoading ? 'hourglass_top' : 'save' }}</span>
                 {{ editLoading ? 'Saving...' : 'Save Changes' }}
@@ -395,6 +391,350 @@
             </button>
           </div>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Global portal for row action menu -->
+  <Teleport to="body">
+    <div v-if="openActionMenuId && actionMenuPos" class="fixed z-[9999]" :style="{ top: actionMenuPos.top + 'px', left: actionMenuPos.left + 'px' }">
+      <div class="w-44 bg-white border border-gray-200 rounded-md shadow-lg">
+        <button @click="openDispenseModal(patients.find(p => p.id === openActionMenuId)!) ; closeActionMenu()"
+          class="w-full text-left px-3 py-2 text-sm hover:bg-[#FFB81C]/10">Dispense</button>
+        <button @click="openLogVisitModal(patients.find(p => p.id === openActionMenuId)!) ; closeActionMenu()"
+          class="w-full text-left px-3 py-2 text-sm hover:bg-green-50">Log Visit</button>
+        <button @click="openHistoryModal(patients.find(p => p.id === openActionMenuId)!) ; closeActionMenu()"
+          class="w-full text-left px-3 py-2 text-sm hover:bg-gray-50">View History</button>
+        <button @click="openEditModal(patients.find(p => p.id === openActionMenuId)!) ; closeActionMenu()"
+          class="w-full text-left px-3 py-2 text-sm hover:bg-blue-50">Edit</button>
+        <button @click="removePatient(patients.find(p => p.id === openActionMenuId)!) ; closeActionMenu()"
+          class="w-full text-left px-3 py-2 text-sm text-red-600 hover:bg-red-50">Delete</button>
+      </div>
+    </div>
+  </Teleport>
+
+  <!-- Dispense Modal -->
+  <div v-if="showDispenseModal"
+    class="fixed inset-0 backdrop-blur-md bg-gray-900/50 flex items-center justify-center z-50 transition-all duration-300">
+    <div class="bg-white/90 backdrop-filter backdrop-blur-sm rounded-xl p-0 w-full max-w-4xl shadow-xl border border-white/20">
+      <div class="bg-[#800000] px-6 py-4 rounded-t-xl">
+        <div class="flex justify-between items-center">
+          <h3 class="text-xl text-white font-semibold flex items-center gap-2">
+            <span class="material-icons">local_pharmacy</span>
+            Dispense Medicine
+          </h3>
+          <button @click="closeDispenseModal" class="text-white hover:text-gray-200 transition-colors">
+            <span class="material-icons">close</span>
+          </button>
+        </div>
+      </div>
+      <div class="p-6">
+        <form @submit.prevent="handleDispense" class="space-y-5">
+          <!-- Patient Info -->
+          <div class="bg-gray-50 p-4 rounded-lg">
+            <h4 class="font-medium text-gray-900 mb-2">Patient Information</h4>
+            <p class="text-sm text-gray-600">{{ selectedPatientForDispense?.name }} ({{ selectedPatientForDispense?.studentId }})</p>
+          </div>
+
+          <!-- Success Message -->
+          <div v-if="dispenseSuccess" class="p-3 bg-green-100 border-l-4 border-green-500 text-green-700 rounded">
+            <div class="flex items-center gap-2">
+              <span class="material-icons text-green-500">check_circle</span>
+              <span>{{ dispenseSuccess }}</span>
+            </div>
+          </div>
+
+          <!-- Error Message -->
+          <div v-if="dispenseError" class="p-3 bg-red-100 border-l-4 border-red-500 text-red-700 rounded">
+            <div class="flex items-center gap-2">
+              <span class="material-icons text-red-500">error</span>
+              <span>{{ dispenseError }}</span>
+            </div>
+          </div>
+
+          <!-- Add Medicine Section -->
+          <div class="bg-[#FFB81C]/10 border border-[#FFB81C]/30 p-4 rounded-lg">
+            <h4 class="font-medium text-[#800000] mb-3 flex items-center gap-2">
+              <span class="material-icons text-[#FFB81C]">add_circle</span>
+              Add Medicine
+            </h4>
+            <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
+              <div class="w-full md:col-span-3">
+                <label class="block text-gray-700 font-medium mb-2">Medicine</label>
+                <div class="relative">
+                  <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                    <span class="material-icons text-gray-500">medication</span>
+                  </div>
+                <select v-model="dispenseForm.medicineId"
+                  class="w-full bg-white border border-[#800000]/30 rounded-lg px-3 py-2.5 pl-10 focus:ring-2 focus:ring-[#800000] focus:border-[#800000] outline-none transition-all appearance-none"
+                  :disabled="dispenseLoading">
+                    <option value="">Select medicine</option>
+                    <option v-for="medicine in medicines" :key="medicine.id" :value="medicine.id" 
+                      :disabled="medicine.quantity === 0 || isExpired(medicine.expirationDate)">
+                      {{ medicine.name }} ({{ medicine.dosage }}) - Qty: {{ medicine.quantity }}
+                      {{ medicine.quantity === 0 ? ' - OUT OF STOCK' : '' }}
+                      {{ isExpired(medicine.expirationDate) ? ' - EXPIRED' : '' }}
+                    </option>
+                  </select>
+                  <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                    <span class="material-icons text-gray-500">expand_more</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="w-full">
+                <label class="block text-gray-700 font-medium mb-2">Quantity</label>
+                <div class="relative">
+                  <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                    <span class="material-icons text-gray-500">inventory</span>
+                  </div>
+                  <input v-model.number="dispenseForm.quantity"
+                    class="w-full bg-white border border-[#800000]/30 rounded-lg px-3 py-2.5 pl-10 focus:ring-2 focus:ring-[#800000] focus:border-[#800000] outline-none transition-all"
+                    type="number" 
+                    min="1"
+                    :disabled="dispenseLoading" />
+                </div>
+              </div>
+
+              <div class="w-full md:col-span-2">
+                <label class="block text-gray-700 font-medium mb-2">Reason for Dispensing</label>
+                <div class="relative">
+                  <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                    <span class="material-icons text-gray-500">description</span>
+                  </div>
+                  <input v-model="dispenseForm.reason" type="text"
+                    placeholder="e.g., Headache, Fever, Pain relief, etc. (Optional)"
+                    class="w-full bg-white border border-[#800000]/30 rounded-lg px-3 py-2.5 pl-10 focus:ring-2 focus:ring-[#800000] focus:border-[#800000] outline-none transition-all"
+                    :disabled="dispenseLoading">
+                </div>
+              </div>
+
+              <div class="w-full flex items-end">
+                <button type="button" @click="addMedicine"
+                  class="w-full bg-[#800000] hover:bg-[#660000] text-white px-4 py-2.5 rounded-lg font-medium flex items-center justify-center gap-2 transition-all disabled:opacity-50"
+                  :disabled="dispenseLoading || !dispenseForm.medicineId">
+                  <span class="material-icons text-base">add</span>
+                  Add 
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Selected Medicines List -->
+          <div v-if="selectedMedicines.length > 0" class="bg-white border border-[#800000]/20 rounded-lg">
+            <div class="px-4 py-3 border-b border-[#800000]/20 bg-[#800000]/5">
+              <h4 class="font-medium text-[#800000] flex items-center gap-2">
+                <span class="material-icons text-[#FFB81C]">inventory_2</span>
+                Selected Medicines
+              </h4>
+            </div>
+            <div class="divide-y divide-gray-200">
+              <div v-for="medicine in selectedMedicines" :key="medicine.id" class="px-4 py-3">
+                <div class="flex items-center justify-between mb-2">
+                  <div class="flex-1">
+                    <div class="font-medium text-gray-900">{{ medicine.name }}</div>
+                    <div class="text-sm text-gray-500">{{ medicine.dosage }}</div>
+                  </div>
+                  <div class="flex items-center gap-3">
+                    <div class="flex items-center gap-2">
+                      <label class="text-sm text-gray-600">Qty:</label>
+                      <input v-model.number="medicine.quantity"
+                        @change="updateMedicineQuantity(medicine.id, medicine.quantity)"
+                        class="w-16 px-2 py-1 text-sm border border-[#800000]/30 rounded focus:ring-2 focus:ring-[#800000] focus:border-[#800000] outline-none"
+                        type="number" 
+                        :min="1" 
+                        :max="medicine.availableQuantity" />
+                      <span class="text-xs text-gray-500">/ {{ medicine.availableQuantity }}</span>
+                    </div>
+                    <button @click="removeMedicine(medicine.id)"
+                      class="text-red-500 hover:text-red-700 p-1">
+                      <span class="material-icons text-base">delete</span>
+                    </button>
+                  </div>
+                </div>
+                <div v-if="medicine.reason" class="text-sm text-gray-600 bg-gray-50 px-3 py-2 rounded">
+                  <span class="font-medium">Reason:</span> {{ medicine.reason }}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex justify-end gap-3 pt-4 border-t">
+            <button type="button" 
+              @click="closeDispenseModal"
+              class="px-6 py-2.5 border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-colors"
+              :disabled="dispenseLoading">
+              Cancel
+            </button>
+            <button type="submit"
+              class="bg-[#800000] hover:bg-[#660000] text-white px-6 py-2.5 rounded-lg font-medium flex items-center gap-2 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-md"
+              :disabled="dispenseLoading">
+              <span class="material-icons text-base">{{ dispenseLoading ? 'hourglass_top' : 'local_pharmacy' }}</span>
+              {{ dispenseLoading ? 'Dispensing...' : 'Dispense Medicine' }}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Patient Medication History Modal -->
+  <div v-if="showHistoryModal"
+    class="fixed inset-0 backdrop-blur-md bg-gray-900/50 flex items-center justify-center z-50 transition-all duration-300">
+    <div class="bg-white/90 backdrop-filter backdrop-blur-sm rounded-xl p-0 w-full max-w-5xl shadow-xl border border-white/20">
+      <div class="bg-[#800000] px-6 py-4 rounded-t-xl">
+        <div class="flex justify-between items-center">
+          <h3 class="text-xl text-white font-semibold flex items-center gap-2">
+            <span class="material-icons">history</span>
+            Medication History - {{ selectedPatientForHistory?.name }}
+          </h3>
+          <button @click="closeHistoryModal" class="text-white hover:text-gray-200 transition-colors">
+            <span class="material-icons">close</span>
+          </button>
+        </div>
+      </div>
+      <div class="p-6">
+        <!-- Loading State -->
+        <div v-if="historyLoading" class="flex justify-center items-center py-8">
+          <div class="flex items-center gap-3">
+            <span class="material-icons animate-spin text-[#800000]">hourglass_top</span>
+            <span class="text-gray-600">Loading medication history...</span>
+          </div>
+        </div>
+
+        <!-- Empty State -->
+        <div v-else-if="patientDispenseHistory.length === 0" class="text-center py-12">
+          <span class="material-icons text-6xl text-gray-300 mb-4">medication</span>
+          <h4 class="text-lg font-medium text-gray-900 mb-2">No Medication History</h4>
+          <p class="text-gray-600">This patient has no dispensed medications yet.</p>
+        </div>
+
+        <!-- History List -->
+        <div v-else class="space-y-4">
+          <div v-for="dispense in patientDispenseHistory" :key="dispense.id" 
+            class="bg-white border border-[#800000]/20 rounded-lg p-4">
+            <div class="flex justify-between items-start mb-3">
+              <div>
+                <h4 class="font-medium text-[#800000]">Dispense #{{ dispense.id }}</h4>
+                <p class="text-sm text-gray-600">{{ formatDate(dispense.dispensedAt) }}</p>
+              </div>
+              <span class="px-2 py-1 bg-[#FFB81C]/20 text-[#800000] text-xs rounded-full">
+                {{ dispense.medicines?.length || 0 }} medicine(s)
+              </span>
+            </div>
+            
+            <!-- Medicines List -->
+            <div class="space-y-2">
+              <div v-for="medicine in dispense.medicines" :key="medicine.medicineId"
+                class="py-2 px-3 bg-gray-50 rounded">
+                <div class="flex justify-between items-center mb-1">
+                  <div>
+                    <span class="font-medium text-gray-900">{{ medicine.medicineName }}</span>
+                  </div>
+                  <div class="flex items-center gap-4">
+                    <span class="text-sm text-gray-600">Quantity: {{ medicine.quantity }}</span>
+                  </div>
+                </div>
+                <div v-if="dispense.reason" class="text-sm text-gray-600">
+                  <span class="font-medium">Reason:</span> {{ dispense.reason }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Summary Stats -->
+        <div v-if="patientDispenseHistory.length > 0" class="mt-6 p-4 bg-[#FFB81C]/10 rounded-lg">
+          <h4 class="font-medium text-[#800000] mb-2">Summary</h4>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+            <div>
+              <span class="text-gray-600">Total Dispenses:</span>
+              <span class="font-medium text-[#800000] ml-2">{{ patientDispenseHistory.length }}</span>
+            </div>
+            <div>
+              <span class="text-gray-600">Total Medicines:</span>
+              <span class="font-medium text-[#800000] ml-2">
+                {{ patientDispenseHistory.reduce((total, d) => total + (d.medicines?.length || 0), 0) }}
+              </span>
+            </div>
+            <div>
+              <span class="text-gray-600">Last Dispense:</span>
+              <span class="font-medium text-[#800000] ml-2">
+                {{ patientDispenseHistory[0] ? formatDate(patientDispenseHistory[0].dispensedAt) : 'N/A' }}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex justify-end mt-6">
+          <button @click="closeHistoryModal"
+            class="px-6 py-2.5 border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-colors">
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Log Visit Modal -->
+  <div v-if="showLogVisitModal"
+    class="fixed inset-0 backdrop-blur-md bg-gray-900/50 flex items-center justify-center z-50 transition-all duration-300">
+    <div class="bg-white/90 backdrop-filter backdrop-blur-sm rounded-xl p-0 w-full max-w-2xl shadow-xl border border-white/20">
+      <div class="bg-[#800000] px-6 py-4 rounded-t-xl">
+        <div class="flex justify-between items-center">
+          <h3 class="text-xl text-white font-semibold flex items-center gap-2">
+            <span class="material-icons">event_note</span>
+            Log Clinic Visit - {{ selectedPatientForVisit?.name }}
+          </h3>
+          <button @click="closeLogVisitModal" class="text-white hover:text-gray-200 transition-colors">
+            <span class="material-icons">close</span>
+          </button>
+        </div>
+      </div>
+      <div class="p-6">
+        <form @submit.prevent="handleLogVisit" class="flex flex-col gap-5">
+          <!-- Success Message -->
+          <div v-if="visitSuccess" class="p-3 bg-green-100 border-l-4 border-green-500 text-green-700 rounded">
+            <div class="flex items-center gap-2">
+              <span class="material-icons text-green-500">check_circle</span>
+              <span>{{ visitSuccess }}</span>
+            </div>
+          </div>
+
+          <!-- Error Message -->
+          <div v-if="visitError" class="p-3 bg-red-100 border-l-4 border-red-500 text-red-700 rounded">
+            <div class="flex items-center gap-2">
+              <span class="material-icons text-red-500">error</span>
+              <span>{{ visitError }}</span>
+            </div>
+          </div>
+
+          <div class="flex flex-col">
+            <label class="text-sm font-medium text-gray-700 mb-1.5">Visit Date *</label>
+            <input v-model="visitForm.visitDate" type="datetime-local" required
+              class="border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-[#800000] focus:border-[#800000] outline-none" />
+          </div>
+
+          <div class="flex flex-col">
+            <label class="text-sm font-medium text-gray-700 mb-1.5">Reason for Visit *</label>
+            <textarea v-model="visitForm.reason" required rows="3" placeholder="Describe the reason for the visit..."
+              class="border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-[#800000] focus:border-[#800000] outline-none resize-none"></textarea>
+          </div>
+
+
+          <div class="flex justify-end gap-3 mt-6">
+            <button type="button" @click="closeLogVisitModal"
+              class="px-6 py-2.5 border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-colors">
+              Cancel
+            </button>
+            <button type="submit" :disabled="visitLoading"
+              class="px-6 py-2.5 bg-[#800000] text-white font-medium rounded-lg hover:bg-[#700000] disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-2">
+              <span v-if="visitLoading" class="material-icons animate-spin text-sm">hourglass_top</span>
+              <span v-else class="material-icons text-sm">save</span>
+              {{ visitLoading ? 'Logging Visit...' : 'Log Visit' }}
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   </div>
@@ -453,13 +793,37 @@ const editForm = ref({
 const showDeleteConfirm = ref(false)
 const patientToDelete = ref<Patient | null>(null)
 
-// Format date to display in table
+// Dispense modal state
+const showDispenseModal = ref(false)
+const selectedPatientForDispense = ref<Patient | null>(null)
+const dispenseLoading = ref(false)
+const dispenseError = ref('')
+const dispenseSuccess = ref('')
+const medicines = ref<any[]>([])
+
+const dispenseForm = ref({
+  medicineId: '',
+  quantity: 1,
+  reason: ''
+})
+
+const selectedMedicines = ref<Array<{
+  id: string
+  name: string
+  dosage: string
+  quantity: number
+  availableQuantity: number
+  reason: string
+}>>([])
+
+// Format date to display in table (Philippines timezone)
 const formatDate = (dateString: string) => {
   const date = new Date(dateString)
   return date.toLocaleDateString('en-US', {
     day: '2-digit',
     month: 'short',
-    year: 'numeric'
+    year: 'numeric',
+    timeZone: 'Asia/Manila'
   })
 }
 
@@ -637,6 +1001,382 @@ const cancelDelete = () => {
   patientToDelete.value = null
 }
 
+// Fetch medicines from Firebase
+const fetchMedicines = async () => {
+  try {
+    const medicinesRef = dbRef(db, 'medicines')
+    const snapshot = await get(medicinesRef)
+    if (snapshot.exists()) {
+      const data = snapshot.val()
+      medicines.value = Object.entries(data).map(([id, medicine]: [string, any]) => ({
+        id,
+        ...medicine
+      }))
+    }
+  } catch (err) {
+    console.error('Failed to fetch medicines:', err)
+  }
+}
+
+// Dispense modal handlers
+const openDispenseModal = (patient: Patient) => {
+  selectedPatientForDispense.value = patient
+  dispenseForm.value = { medicineId: '', quantity: 1, reason: '' }
+  selectedMedicines.value = []
+  dispenseError.value = ''
+  dispenseSuccess.value = ''
+  showDispenseModal.value = true
+  fetchMedicines()
+}
+
+const closeDispenseModal = () => {
+  showDispenseModal.value = false
+  selectedPatientForDispense.value = null
+  dispenseForm.value = { medicineId: '', quantity: 1, reason: '' }
+  selectedMedicines.value = []
+  dispenseError.value = ''
+  dispenseSuccess.value = ''
+}
+
+const addMedicine = () => {
+  if (!dispenseForm.value.medicineId || dispenseForm.value.quantity <= 0) {
+    dispenseError.value = 'Please select a medicine and enter a valid quantity'
+    return
+  }
+
+  // Reason is optional - no validation needed
+
+  const medicine = medicines.value.find(m => m.id === dispenseForm.value.medicineId)
+  if (!medicine) {
+    dispenseError.value = 'Selected medicine not found'
+    return
+  }
+
+  // Check if already added
+  if (selectedMedicines.value.some(m => m.id === medicine.id)) {
+    dispenseError.value = 'This medicine is already added'
+    return
+  }
+
+  // Check if medicine is out of stock
+  if (medicine.quantity === 0) {
+    dispenseError.value = `❌ ${medicine.name} is out of stock (0 available)`
+    return
+  }
+
+  // Check if medicine is expired
+  if (medicine.expirationDate) {
+    const today = new Date()
+    const expiryDate = new Date(medicine.expirationDate + '-01') // Add day to make it first of month
+    if (expiryDate <= today) {
+      dispenseError.value = `⚠️ ${medicine.name} has expired (Expiry: ${medicine.expirationDate})`
+      return
+    }
+    
+    // Check if medicine expires within 30 days
+    const thirtyDaysFromNow = new Date()
+    thirtyDaysFromNow.setDate(thirtyDaysFromNow.getDate() + 30)
+    if (expiryDate <= thirtyDaysFromNow) {
+      dispenseError.value = `⚠️ ${medicine.name} expires soon (Expiry: ${medicine.expirationDate}). Proceed with caution.`
+      // Allow adding but show warning
+    }
+  }
+
+  // Check available quantity
+  if (medicine.quantity < dispenseForm.value.quantity) {
+    dispenseError.value = `Insufficient quantity. Available: ${medicine.quantity}`
+    return
+  }
+
+  selectedMedicines.value.push({
+    id: medicine.id,
+    name: medicine.name,
+    dosage: medicine.dosage,
+    quantity: dispenseForm.value.quantity,
+    availableQuantity: medicine.quantity,
+    reason: dispenseForm.value.reason || ''
+  })
+
+  // Reset form
+  dispenseForm.value = { medicineId: '', quantity: 1, reason: '' }
+  dispenseError.value = ''
+}
+
+const removeMedicine = (medicineId: string) => {
+  selectedMedicines.value = selectedMedicines.value.filter(m => m.id !== medicineId)
+}
+
+const updateMedicineQuantity = (medicineId: string, newQuantity: number) => {
+  const medicine = selectedMedicines.value.find(m => m.id === medicineId)
+  if (medicine && newQuantity > 0 && newQuantity <= medicine.availableQuantity) {
+    medicine.quantity = newQuantity
+  }
+}
+
+// Helper function to check if medicine is expired
+const isExpired = (expirationDate: string) => {
+  if (!expirationDate) return false
+  const today = new Date()
+  const expiryDate = new Date(expirationDate + '-01') // Add day to make it first of month
+  return expiryDate <= today
+}
+
+const handleDispense = async () => {
+  if (!selectedPatientForDispense.value || selectedMedicines.value.length === 0) {
+    dispenseError.value = 'Please add at least one medicine'
+    return
+  }
+
+  try {
+    dispenseLoading.value = true
+    dispenseError.value = ''
+    dispenseSuccess.value = ''
+
+    const currentUser = authStore.getCurrentUser()
+    if (!currentUser) {
+      dispenseError.value = 'You must be logged in to dispense medicine'
+      return
+    }
+
+    // Create dispense record
+    const dispenseRef = dbRef(db, 'dispenses')
+    const snapshot = await get(dispenseRef)
+    const dispenseCount = snapshot.size || 0
+    const paddedCount = String(dispenseCount + 1).padStart(6, '0')
+    const dispenseId = `D-${paddedCount}`
+
+    // Process each selected medicine
+    const dispensedMedicines = []
+    for (const selectedMedicine of selectedMedicines.value) {
+      // Update medicine quantity
+      const newQuantity = selectedMedicine.availableQuantity - selectedMedicine.quantity
+      await update(dbRef(db, `medicines/${selectedMedicine.id}`), {
+        quantity: newQuantity,
+        updatedAt: new Date().toISOString(),
+        updatedBy: currentUser.uid
+      })
+
+      dispensedMedicines.push({
+        medicineId: selectedMedicine.id,
+        medicineName: selectedMedicine.name,
+        quantity: selectedMedicine.quantity,
+        reason: selectedMedicine.reason || ''
+      })
+    }
+
+    // Create dispense record with all medicines
+    await set(dbRef(db, `dispenses/${dispenseId}`), {
+      patientId: selectedPatientForDispense.value.id,
+      patientName: selectedPatientForDispense.value.name,
+      medicines: dispensedMedicines,
+      reason: selectedMedicines.value[0]?.reason || '', // Use first medicine's reason as overall reason
+      dispensedAt: new Date().toISOString(),
+      dispensedBy: currentUser.uid
+    })
+
+    // Create clinic visit record
+    const visitsRef = dbRef(db, 'clinic-visits')
+    const visitsSnapshot = await get(visitsRef)
+    const visitCount = visitsSnapshot.size || 0
+    const paddedVisitCount = String(visitCount + 1).padStart(6, '0')
+    const visitId = `V-${paddedVisitCount}`
+
+    await set(dbRef(db, `clinic-visits/${visitId}`), {
+      patientId: selectedPatientForDispense.value.id,
+      patientName: selectedPatientForDispense.value.name,
+      reason: selectedMedicines.value[0]?.reason || '',
+      medicinesDispensed: dispensedMedicines.map(m => m.medicineName).join(', '),
+      timestamp: new Date().toISOString(),
+      recordedBy: currentUser.uid,
+      dispenseId: dispenseId // Link to the dispense record
+    })
+
+    const medicineNames = dispensedMedicines.map(m => `${m.quantity}x ${m.medicineName}`).join(', ')
+    dispenseSuccess.value = `Successfully dispensed ${medicineNames} to ${selectedPatientForDispense.value.name}`
+    
+    // Close modal after success
+    setTimeout(() => {
+      closeDispenseModal()
+    }, 2000)
+
+  } catch (err: any) {
+    dispenseError.value = err.message || 'Failed to dispense medicine'
+  } finally {
+    dispenseLoading.value = false
+  }
+}
+
+const viewPatient = (patient: Patient) => {
+  // TODO: Navigate to a detailed view if available
+  console.log('View patient', patient.id)
+}
+
+// Patient medication history state
+const showHistoryModal = ref(false)
+const selectedPatientForHistory = ref<Patient | null>(null)
+const patientDispenseHistory = ref<any[]>([])
+const historyLoading = ref(false)
+
+// Log visit modal state
+const showLogVisitModal = ref(false)
+const selectedPatientForVisit = ref<Patient | null>(null)
+const visitLoading = ref(false)
+const visitError = ref('')
+const visitSuccess = ref('')
+
+const visitForm = ref({
+  visitDate: '',
+  reason: ''
+})
+
+const openHistoryModal = async (patient: Patient) => {
+  selectedPatientForHistory.value = patient
+  showHistoryModal.value = true
+  await fetchPatientDispenseHistory(patient.id)
+}
+
+const closeHistoryModal = () => {
+  showHistoryModal.value = false
+  selectedPatientForHistory.value = null
+  patientDispenseHistory.value = []
+}
+
+// Log visit modal handlers
+const openLogVisitModal = (patient: Patient) => {
+  selectedPatientForVisit.value = patient
+  
+  // Get current date/time in Philippines timezone (UTC+8)
+  const now = new Date()
+  // Convert to Philippines timezone by adjusting for UTC+8
+  const philippinesOffset = 8 * 60 // 8 hours in minutes
+  const utc = now.getTime() + (now.getTimezoneOffset() * 60000)
+  const philippinesTime = new Date(utc + (philippinesOffset * 60000))
+  
+  // Format for datetime-local input (YYYY-MM-DDTHH:MM)
+  const year = philippinesTime.getFullYear()
+  const month = String(philippinesTime.getMonth() + 1).padStart(2, '0')
+  const day = String(philippinesTime.getDate()).padStart(2, '0')
+  const hours = String(philippinesTime.getHours()).padStart(2, '0')
+  const minutes = String(philippinesTime.getMinutes()).padStart(2, '0')
+  const localDateTime = `${year}-${month}-${day}T${hours}:${minutes}`
+  
+  visitForm.value = {
+    visitDate: localDateTime, // Set current date/time in Philippines timezone
+    reason: ''
+  }
+  visitError.value = ''
+  visitSuccess.value = ''
+  showLogVisitModal.value = true
+}
+
+const closeLogVisitModal = () => {
+  showLogVisitModal.value = false
+  selectedPatientForVisit.value = null
+  visitForm.value = {
+    visitDate: '',
+    reason: ''
+  }
+  visitError.value = ''
+  visitSuccess.value = ''
+}
+
+const handleLogVisit = async () => {
+  if (!selectedPatientForVisit.value) {
+    visitError.value = 'No patient selected'
+    return
+  }
+
+  try {
+    visitLoading.value = true
+    visitError.value = ''
+    visitSuccess.value = ''
+
+    const currentUser = authStore.getCurrentUser()
+    if (!currentUser) {
+      visitError.value = 'You must be logged in to log a visit'
+      return
+    }
+
+    // Create clinic visit record
+    const visitsRef = dbRef(db, 'clinic-visits')
+    const visitsSnapshot = await get(visitsRef)
+    const visitCount = visitsSnapshot.size || 0
+    const paddedVisitCount = String(visitCount + 1).padStart(6, '0')
+    const visitId = `V-${paddedVisitCount}`
+
+    // Convert local datetime to UTC for storage
+    // The datetime-local input gives us local time, so we need to convert it to UTC
+    const localDateTime = new Date(visitForm.value.visitDate)
+    const utcDateTime = new Date(localDateTime.getTime() - (localDateTime.getTimezoneOffset() * 60000))
+    
+    await set(dbRef(db, `clinic-visits/${visitId}`), {
+      patientId: selectedPatientForVisit.value.id,
+      patientName: selectedPatientForVisit.value.name,
+      reason: visitForm.value.reason,
+      timestamp: utcDateTime.toISOString(),
+      recordedBy: currentUser.uid
+    })
+
+    visitSuccess.value = `Visit logged successfully for ${selectedPatientForVisit.value.name}`
+    
+    // Close modal after success
+    setTimeout(() => {
+      closeLogVisitModal()
+    }, 2000)
+
+  } catch (err: any) {
+    visitError.value = err.message || 'Failed to log visit'
+  } finally {
+    visitLoading.value = false
+  }
+}
+
+const fetchPatientDispenseHistory = async (patientId: string) => {
+  try {
+    historyLoading.value = true
+    const dispensesRef = dbRef(db, 'dispenses')
+    const snapshot = await get(dispensesRef)
+    
+    if (snapshot.exists()) {
+      const data = snapshot.val()
+      patientDispenseHistory.value = Object.entries(data)
+        .map(([id, dispense]: [string, any]) => ({ id, ...dispense }))
+        .filter((dispense: any) => dispense.patientId === patientId)
+        .sort((a: any, b: any) => new Date(b.dispensedAt).getTime() - new Date(a.dispensedAt).getTime())
+    } else {
+      patientDispenseHistory.value = []
+    }
+  } catch (err) {
+    console.error('Failed to fetch dispense history:', err)
+    patientDispenseHistory.value = []
+  } finally {
+    historyLoading.value = false
+  }
+}
+
+// Row action menu control
+const openActionMenuId = ref<string | null>(null)
+const actionMenuPos = ref<{ top: number; left: number } | null>(null)
+const toggleActionMenu = (patientId: string, event?: MouseEvent) => {
+  if (openActionMenuId.value === patientId) {
+    closeActionMenu()
+    return
+  }
+  openActionMenuId.value = patientId
+  if (event) {
+    const rect = (event.currentTarget as HTMLElement).getBoundingClientRect()
+    actionMenuPos.value = { top: rect.bottom + 8, left: rect.right - 176 } // 176 ~ menu width
+  }
+}
+const closeActionMenu = () => { openActionMenuId.value = null; actionMenuPos.value = null }
+
+// Close menu on outside click / scroll / resize
+if (typeof window !== 'undefined') {
+  window.addEventListener('click', closeActionMenu)
+  window.addEventListener('scroll', closeActionMenu, true)
+  window.addEventListener('resize', closeActionMenu)
+}
+
 // Close add modal
 const closeAddModal = () => {
   showAddModal.value = false
@@ -660,4 +1400,4 @@ onMounted(() => {
 
 <style scoped>
 @import url('https://fonts.googleapis.com/icon?family=Material+Icons');
-</style> 
+</style>
