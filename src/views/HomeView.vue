@@ -40,72 +40,65 @@ const closeLogoutModal = () => {
         <div class="text-xs uppercase text-[#FFB81C]/70 font-semibold tracking-wider px-4 mb-2">Main Menu</div>
         <ul class="space-y-1.5">
           <li>
-            <router-link to="/" 
+            <router-link to="/"
               class="flex items-center px-4 py-2.5 rounded-lg text-white hover:bg-[#FFB81C]/10 transition-all sidebar-link"
               :class="{ 'bg-[#FFB81C] text-[#800000] font-semibold shadow-md': route.path === '/' }">
-              <span class="material-icons text-[22px] mr-3">dashboard</span> 
+              <span class="material-icons text-[22px] mr-3">dashboard</span>
               <span>Dashboard</span>
             </router-link>
           </li>
           <li>
-            <router-link to="/patients" 
+            <router-link to="/patients"
               class="flex items-center px-4 py-2.5 rounded-lg text-white hover:bg-[#FFB81C]/10 transition-all sidebar-link"
               :class="{ 'bg-[#FFB81C] text-[#800000] font-semibold shadow-md': route.path.includes('/patient') }">
-              <span class="material-icons text-[22px] mr-3">person</span> 
+              <span class="material-icons text-[22px] mr-3">person</span>
               <span>Patients</span>
             </router-link>
           </li>
           <li>
-            <router-link to="/medicines" 
+            <router-link to="/medicines"
               class="flex items-center px-4 py-2.5 rounded-lg text-white hover:bg-[#FFB81C]/10 transition-all sidebar-link"
-              :class="{ 'bg-[#FFB81C] text-[#800000] font-semibold shadow-md': route.path.includes('/medicine') }">
-              <span class="material-icons text-[22px] mr-3">medication</span> 
+              :class="{ 'bg-[#FFB81C] text-[#800000] font-semibold shadow-md': route.path.startsWith('/medicines') }">
+              <span class="material-icons text-[22px] mr-3">medication</span>
               <span>Medicines</span>
             </router-link>
           </li>
+
           <li>
-            <router-link to="/reports" 
-              class="flex items-center px-4 py-2.5 rounded-lg text-white hover:bg-[#FFB81C]/10 transition-all sidebar-link"
-              :class="{ 'bg-[#FFB81C] text-[#800000] font-semibold shadow-md': route.path.includes('/report') }">
-              <span class="material-icons text-[22px] mr-3">edit</span> 
-              <span>Reports</span>
-            </router-link>
-          </li>
-          <li>
-            <router-link to="/visit-logs" 
+            <router-link to="/visit-logs"
               class="flex items-center px-4 py-2.5 rounded-lg text-white hover:bg-[#FFB81C]/10 transition-all sidebar-link"
               :class="{ 'bg-[#FFB81C] text-[#800000] font-semibold shadow-md': route.path.includes('/visit-logs') }">
-              <span class="material-icons text-[22px] mr-3">event_note</span> 
+              <span class="material-icons text-[22px] mr-3">event_note</span>
               <span>Visit Logs</span>
             </router-link>
           </li>
           <li>
-            <router-link to="/medicine-dispensed" 
+            <router-link to="/medicine-dispensed"
               class="flex items-center px-4 py-2.5 rounded-lg text-white hover:bg-[#FFB81C]/10 transition-all sidebar-link"
               :class="{ 'bg-[#FFB81C] text-[#800000] font-semibold shadow-md': route.path.includes('/medicine-dispensed') }">
-              <span class="material-icons text-[22px] mr-3">medication</span> 
+              <span class="material-icons text-[22px] mr-3">medication</span>
               <span>Medicine Dispensed</span>
             </router-link>
           </li>
         </ul>
-        
-        <!-- <div class="text-xs uppercase text-[#FFB81C]/70 font-semibold tracking-wider px-4 mb-2 mt-6">Administration</div> -->
+
+        <div class="text-xs uppercase text-[#FFB81C]/70 font-semibold tracking-wider px-4 mb-2 mt-6">Reports</div>
         <ul class="space-y-1.5">
-          <!-- <li>
-            <router-link to="/users" 
+          <li>
+            <router-link to="/reports"
               class="flex items-center px-4 py-2.5 rounded-lg text-white hover:bg-[#FFB81C]/10 transition-all sidebar-link"
-              :class="{ 'bg-[#FFB81C] text-[#800000] font-semibold shadow-md': route.path === '/users' }">
-              <span class="material-icons text-[22px] mr-3">group</span> 
-              <span>Users</span>
+              :class="{ 'bg-[#FFB81C] text-[#800000] font-semibold shadow-md': route.path.includes('/report') }">
+              <span class="material-icons text-[22px] mr-3">edit</span>
+              <span>Generate Reports</span>
             </router-link>
-          </li> -->
+          </li>
         </ul>
       </nav>
       <div class="mt-auto">
         <div class="px-3 pb-2">
-          <span @click="openLogoutModal" 
+          <span @click="openLogoutModal"
             class="flex items-center px-4 py-2.5 rounded-lg text-white hover:bg-red-500/20 transition-all cursor-pointer border border-red-400/30">
-            <span class="material-icons text-[22px] mr-3">logout</span> 
+            <span class="material-icons text-[22px] mr-3">logout</span>
             <span>Logout</span>
           </span>
         </div>
@@ -131,7 +124,8 @@ const closeLogoutModal = () => {
 
   <!-- Logout Confirmation Modal -->
   <Teleport to="body">
-    <div v-if="showLogoutModal" class="fixed inset-0 bg-white/30 backdrop-blur-sm flex items-center justify-center z-50">
+    <div v-if="showLogoutModal"
+      class="fixed inset-0 bg-white/30 backdrop-blur-sm flex items-center justify-center z-50">
       <div class="bg-white rounded-lg p-6 w-[400px] shadow-xl">
         <div class="flex items-center justify-between mb-4">
           <h3 class="text-lg font-semibold text-gray-900">Confirm Logout</h3>
@@ -141,16 +135,12 @@ const closeLogoutModal = () => {
         </div>
         <p class="text-gray-600 mb-6">Are you sure you want to logout from your account?</p>
         <div class="flex justify-end space-x-3">
-          <button 
-            @click="closeLogoutModal"
-            class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-md transition-colors"
-          >
+          <button @click="closeLogoutModal"
+            class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-md transition-colors">
             Cancel
           </button>
-          <button 
-            @click="handleLogout"
-            class="px-4 py-2 text-sm font-medium text-white bg-red-600 hover:bg-red-700 rounded-md transition-colors"
-          >
+          <button @click="handleLogout"
+            class="px-4 py-2 text-sm font-medium text-white bg-red-600 hover:bg-red-700 rounded-md transition-colors">
             Logout
           </button>
         </div>

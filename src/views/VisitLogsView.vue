@@ -87,7 +87,7 @@
                   <div v-if="visit.medicinesDispensed" class="text-sm text-gray-700 max-w-xs truncate">
                     {{ visit.medicinesDispensed }}
                   </div>
-                  <div v-else class="text-sm text-gray-400">-</div>
+                  <div v-else class="text-sm text-gray-400">No Medicines Dispensed</div>
                 </td>
               </tr>
             </tbody>
@@ -116,18 +116,16 @@ const searchQuery = ref('')
 
 // Format date to display in table (Philippines timezone)
 const formatDate = (dateString: string) => {
-  // Since the timestamp is stored as Philippine time but with 'Z' suffix,
-  // we need to parse it as if it's already in local time
-  // Remove the 'Z' and parse as local time
-  const localTimeString = dateString.replace('Z', '')
-  const date = new Date(localTimeString)
+  if (!dateString) return ''
   
+  const date = new Date(dateString)
   return date.toLocaleDateString('en-US', {
     day: '2-digit',
     month: 'short',
     year: 'numeric',
     hour: '2-digit',
-    minute: '2-digit'
+    minute: '2-digit',
+    timeZone: 'Asia/Manila'
   })
 }
 

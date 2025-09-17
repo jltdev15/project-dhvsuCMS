@@ -94,11 +94,12 @@ const patientHistory = ref<PatientHistory[]>([])
 
 const formatDate = (dateString: string) => {
   const date = new Date(dateString)
-  return date.toLocaleDateString('en-US', {
+  return new Intl.DateTimeFormat('en-US', {
+    timeZone: 'Asia/Manila',
     day: '2-digit',
     month: 'short',
     year: 'numeric'
-  })
+  }).format(date)
 }
 
 const fetchPatients = () => {

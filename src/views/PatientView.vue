@@ -1304,16 +1304,26 @@ const handleLogVisit = async () => {
     const paddedVisitCount = String(visitCount + 1).padStart(6, '0')
     const visitId = `V-${paddedVisitCount}`
 
-    // Convert local datetime to UTC for storage
-    // The datetime-local input gives us local time, so we need to convert it to UTC
-    const localDateTime = new Date(visitForm.value.visitDate)
-    const utcDateTime = new Date(localDateTime.getTime() - (localDateTime.getTimezoneOffset() * 60000))
-    
+    // Convert the provided date-time to explicit Philippine time (+08:00) for storage
+    // `visitForm.value.visitDate` is in the format YYYY-MM-DDTHH:mm (from datetime-local)
+    // We persist it as Manila local time with an explicit offset to avoid ambiguity across timezones.
+    const visitStr: string = visitForm.value.visitDate
+    const [datePart, timePart] = visitStr.split('T')
+    const [y, m, d] = datePart.split('-').map((v) => parseInt(v, 10))
+    const [hh, mm] = (timePart || '00:00').split(':').map((v) => parseInt(v, 10))
+    // Build RFC3339 string with +08:00 offset (Asia/Manila has no DST)
+    const yyyy = String(y).padStart(4, '0')
+    const mon = String(m).padStart(2, '0')
+    const day = String(d).padStart(2, '0')
+    const hour = String(hh).padStart(2, '0')
+    const min = String(mm).padStart(2, '0')
+    const manilaTimestamp = `${yyyy}-${mon}-${day}T${hour}:${min}:00+08:00`
+
     await set(dbRef(db, `clinic-visits/${visitId}`), {
       patientId: selectedPatientForVisit.value.id,
       patientName: selectedPatientForVisit.value.name,
       reason: visitForm.value.reason,
-      timestamp: utcDateTime.toISOString(),
+      timestamp: manilaTimestamp,
       recordedBy: currentUser.uid
     })
 
