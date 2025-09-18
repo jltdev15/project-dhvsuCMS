@@ -12,11 +12,13 @@ import { ref, onMounted, onUnmounted } from 'vue'
 import { getDatabase, ref as dbRef, onValue } from 'firebase/database'
 import { app } from '../firebase'
 import Chart from 'chart.js/auto'
+import { useRouter } from 'vue-router'
 
 export default {
   name: 'ClinicVisitsChart',
   setup() {
     const db = getDatabase(app)
+    const router = useRouter()
     const visitsChart = ref<HTMLCanvasElement | null>(null)
     let chartInstance: Chart | null = null
     const visitsData = ref<number[]>([])
@@ -63,6 +65,20 @@ export default {
       }
     }
 
+    const handleChartClick = (event: any) => {
+      if (chartInstance) {
+        const activePoints = chartInstance.getElementsAtEventForMode(event, 'nearest', { intersect: true }, true)
+        if (activePoints.length > 0) {
+          const clickedIndex = activePoints[0].index
+          const monthLabel = months[clickedIndex]
+          router.push({
+            name: 'visit-logs',
+            query: { month: monthLabel.toLowerCase() }
+          })
+        }
+      }
+    }
+
     const initializeVisitsChart = () => {
       if (visitsChart.value) {
         chartInstance = new Chart(visitsChart.value, {
@@ -80,6 +96,12 @@ export default {
           options: {
             responsive: true,
             maintainAspectRatio: false,
+            onClick: handleChartClick,
+            onHover: (event: any, activeElements: any[]) => {
+              if (event.native && visitsChart.value) {
+                visitsChart.value.style.cursor = activeElements.length > 0 ? 'pointer' : 'default'
+              }
+            },
             plugins: {
               title: {
                 display: true,

@@ -39,6 +39,14 @@
                 type="text" placeholder="Search visits..." />
             </div>
           </div>
+
+          <div v-if="displayMonthName" class="flex items-center gap-2 text-sm bg-[#800000]/10 text-[#800000] px-3 py-2 rounded-lg">
+            <span class="material-icons text-base">filter_alt</span>
+            <span>Filtered by: <span class="font-semibold">{{ displayMonthName }}</span></span>
+            <button @click="clearMonthFilter" class="ml-1 text-[#800000] hover:text-[#5a0000]" aria-label="Clear month filter">
+              <span class="material-icons text-base">close</span>
+            </button>
+          </div>
         </div>
 
         <!-- Table -->
@@ -106,13 +114,27 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted, computed, watch } from 'vue'
 import { getDatabase, ref as dbRef, onValue } from 'firebase/database'
 import { app } from '../firebase'
+import { useRoute, useRouter } from 'vue-router'
 
 const db = getDatabase(app)
 const visits = ref<any[]>([])
 const searchQuery = ref('')
+const route = useRoute()
+const router = useRouter()
+const monthQuery = ref<string | null>(null)
+
+const monthAbbrevs = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec']
+const fullMonthNames = ['January','February','March','April','May','June','July','August','September','October','November','December']
+
+const getMonthIndexFromQuery = (q: string | null): number | null => {
+  if (!q) return null
+  const lower = q.toLowerCase()
+  const idx = monthAbbrevs.indexOf(lower)
+  return idx >= 0 ? idx : null
+}
 
 // Format date to display in table (Philippines timezone)
 const formatDate = (dateString: string) => {
@@ -129,14 +151,34 @@ const formatDate = (dateString: string) => {
   })
 }
 
-// Filter visits based on search query
+const displayMonthName = computed(() => {
+  const idx = getMonthIndexFromQuery(monthQuery.value)
+  return idx === null ? '' : fullMonthNames[idx]
+})
+
+const clearMonthFilter = () => {
+  monthQuery.value = null
+  router.push({ name: route.name as string, query: { ...route.query, month: undefined } })
+}
+
+// Filter visits based on month query and search query
 const filteredVisits = computed(() => {
-  if (!searchQuery.value) return visits.value
-  
+  const monthIdx = getMonthIndexFromQuery(monthQuery.value)
+  const byMonth = monthIdx === null
+    ? visits.value
+    : visits.value.filter((visit) => {
+        if (!visit.timestamp) return false
+        const d = new Date(visit.timestamp)
+        if (isNaN(d.getTime())) return false
+        return d.getMonth() === monthIdx
+      })
+
+  if (!searchQuery.value) return byMonth
+
   const query = searchQuery.value.toLowerCase()
-  return visits.value.filter(visit => 
-    visit.patientName.toLowerCase().includes(query) ||
-    visit.reason.toLowerCase().includes(query) ||
+  return byMonth.filter(visit => 
+    (visit.patientName && visit.patientName.toLowerCase().includes(query)) ||
+    (visit.reason && visit.reason.toLowerCase().includes(query)) ||
     (visit.medicinesDispensed && visit.medicinesDispensed.toLowerCase().includes(query))
   )
 })
@@ -158,5 +200,10 @@ const fetchVisits = () => {
 
 onMounted(() => {
   fetchVisits()
+  monthQuery.value = (route.query.month as string) || null
+})
+
+watch(() => route.query.month, (newVal) => {
+  monthQuery.value = (newVal as string) || null
 })
 </script>
