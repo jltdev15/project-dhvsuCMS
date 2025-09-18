@@ -21,26 +21,26 @@ export default {
     let chartInstance: Chart | null = null
     const visitsData = ref<number[]>([])
     const months = [
-      'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
-      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'
+      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 
+      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
     ]
 
     const generateDummyData = () => {
       // Generate a realistic trend pattern for clinic visits
       // Base numbers with some seasonal variation and random fluctuation
       const baseNumbers = [
-        35,  // Aug (Start of semester)
-        45,  // Sep (Peak)
-        40,  // Oct
-        35,  // Nov
-        30,  // Dec (Holiday break)
         25,  // Jan (Start of new semester)
         40,  // Feb (Peak)
         45,  // Mar (Peak)
         40,  // Apr
         35,  // May
         30,  // Jun (End of semester)
-        25   // Jul (Summer break)
+        25,  // Jul (Summer break)
+        35,  // Aug (Start of semester)
+        45,  // Sep (Peak)
+        40,  // Oct
+        35,  // Nov
+        30   // Dec (Holiday break)
       ]
 
       // Add some random variation (±5) to make it look more natural
@@ -56,10 +56,13 @@ export default {
         const data = snapshot.val()
         if (data) {
           // Process the data to get monthly counts
+          // Chart labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+          // Array indices:  [0,    1,    2,    3,    4,    5,    6,    7,    8,    9,    10,   11]
+          // JS month indices: Jan=0, Feb=1, Mar=2, Apr=3, May=4, Jun=5, Jul=6, Aug=7, Sep=8, Oct=9, Nov=10, Dec=11
           const monthlyCounts = new Array(12).fill(0)
           Object.values(data).forEach((visit: any) => {
             const visitDate = new Date(visit.timestamp)
-            const monthIndex = visitDate.getMonth()
+            const monthIndex = visitDate.getMonth() // 0-11 (Jan=0, Dec=11)
             monthlyCounts[monthIndex]++
           })
           visitsData.value = monthlyCounts
