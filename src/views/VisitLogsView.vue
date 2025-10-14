@@ -40,10 +40,26 @@
             </div>
           </div>
 
+          <div class="flex items-center gap-2 text-sm">
+            <label class="text-gray-600">Month:</label>
+            <select v-model="monthSelector" class="bg-white border border-gray-300 text-gray-900 rounded-lg py-2 px-3 focus:ring-2 focus:ring-[#800000] focus:border-[#800000] outline-none">
+              <option value="">All Months</option>
+              <option v-for="(m, idx) in fullMonthNames" :key="idx" :value="monthAbbrevs[idx]">{{ m }}</option>
+            </select>
+          </div>
+
           <div v-if="displayMonthName" class="flex items-center gap-2 text-sm bg-[#800000]/10 text-[#800000] px-3 py-2 rounded-lg">
             <span class="material-icons text-base">filter_alt</span>
             <span>Filtered by: <span class="font-semibold">{{ displayMonthName }}</span></span>
             <button @click="clearMonthFilter" class="ml-1 text-[#800000] hover:text-[#5a0000]" aria-label="Clear month filter">
+              <span class="material-icons text-base">close</span>
+            </button>
+          </div>
+
+          <div v-if="displayReason" class="flex items-center gap-2 text-sm bg-[#800000]/10 text-[#800000] px-3 py-2 rounded-lg">
+            <span class="material-icons text-base">filter_alt</span>
+            <span>Reason: <span class="font-semibold">{{ displayReason }}</span></span>
+            <button @click="clearReasonFilter" class="ml-1 text-[#800000] hover:text-[#5a0000]" aria-label="Clear reason filter">
               <span class="material-icons text-base">close</span>
             </button>
           </div>
@@ -125,15 +141,31 @@ const searchQuery = ref('')
 const route = useRoute()
 const router = useRouter()
 const monthQuery = ref<string | null>(null)
+const monthSelector = ref<string>('')
+const reasonQuery = ref<string | null>(null)
 
 const monthAbbrevs = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec']
 const fullMonthNames = ['January','February','March','April','May','June','July','August','September','October','November','December']
 
 const getMonthIndexFromQuery = (q: string | null): number | null => {
   if (!q) return null
-  const lower = q.toLowerCase()
-  const idx = monthAbbrevs.indexOf(lower)
-  return idx >= 0 ? idx : null
+  const trimmed = q.trim()
+  if (!trimmed) return null
+
+  // If numeric: support 1-12, or 01-12
+  if (/^\d{1,2}$/.test(trimmed)) {
+    const n = parseInt(trimmed, 10)
+    if (n >= 1 && n <= 12) return n - 1
+  }
+
+  // Accept full month names like "October" or abbreviations; compare first 3 letters
+  const first3 = trimmed.slice(0, 3).toLowerCase()
+  const idx = monthAbbrevs.indexOf(first3)
+  if (idx >= 0) return idx
+
+  // Try to match full month name
+  const fullIdx = fullMonthNames.findIndex(m => m.toLowerCase() === trimmed.toLowerCase())
+  return fullIdx >= 0 ? fullIdx : null
 }
 
 // Format date to display in table (Philippines timezone)
@@ -156,9 +188,17 @@ const displayMonthName = computed(() => {
   return idx === null ? '' : fullMonthNames[idx]
 })
 
+const displayReason = computed(() => (reasonQuery.value || '').toString())
+
 const clearMonthFilter = () => {
   monthQuery.value = null
+  monthSelector.value = ''
   router.push({ name: route.name as string, query: { ...route.query, month: undefined } })
+}
+
+const clearReasonFilter = () => {
+  reasonQuery.value = null
+  router.push({ name: route.name as string, query: { ...route.query, reason: undefined } })
 }
 
 // Filter visits based on month query and search query
@@ -173,10 +213,14 @@ const filteredVisits = computed(() => {
         return d.getMonth() === monthIdx
       })
 
-  if (!searchQuery.value) return byMonth
+  const byReason = !reasonQuery.value
+    ? byMonth
+    : byMonth.filter(v => (v.reason || '').toString().trim().toLowerCase() === reasonQuery.value!.toLowerCase())
+
+  if (!searchQuery.value) return byReason
 
   const query = searchQuery.value.toLowerCase()
-  return byMonth.filter(visit => 
+  return byReason.filter(visit => 
     (visit.patientName && visit.patientName.toLowerCase().includes(query)) ||
     (visit.reason && visit.reason.toLowerCase().includes(query)) ||
     (visit.medicinesDispensed && visit.medicinesDispensed.toLowerCase().includes(query))
@@ -201,9 +245,26 @@ const fetchVisits = () => {
 onMounted(() => {
   fetchVisits()
   monthQuery.value = (route.query.month as string) || null
+  reasonQuery.value = (route.query.reason as string) || null
+  monthSelector.value = (route.query.month as string) || ''
 })
 
 watch(() => route.query.month, (newVal) => {
   monthQuery.value = (newVal as string) || null
+  monthSelector.value = (newVal as string) || ''
+})
+
+watch(() => route.query.reason, (newVal) => {
+  reasonQuery.value = (newVal as string) || null
+})
+
+// Keep route query in sync when user changes dropdown
+watch(monthSelector, (newVal) => {
+  const current = (route.query.month as string) || ''
+  if (current === (newVal || '')) return
+  const newQuery: Record<string, any> = { ...route.query }
+  if (!newVal) delete newQuery.month
+  else newQuery.month = newVal
+  router.replace({ name: route.name as string, query: newQuery })
 })
 </script>

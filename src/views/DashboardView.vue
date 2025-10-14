@@ -8,6 +8,8 @@
       <MedicationDispensedChart />
       <MedicationExpiryChart />
       <ClinicVisitsTrendChart />
+      <GenderVisitsChart />
+      <ReasonByGenderChart />
     </div>
   </section>
 </template>
@@ -26,6 +28,10 @@ import MedicationDispensedChart from '../components/MedicationDispensedChart.vue
 import MedicationExpiryChart from '../components/MedicationExpiryChart.vue'
 // @ts-ignore
 import ClinicVisitsTrendChart from '../components/ClinicVisitsTrendChart.vue'
+// @ts-ignore
+import GenderVisitsChart from '../components/GenderVisitsChart.vue'
+// @ts-ignore
+import ReasonByGenderChart from '../components/ReasonByGenderChart.vue'
 
 const db = getDatabase(app)
 
