@@ -92,10 +92,12 @@ export default {
       const activePoints = chartInstance.getElementsAtEventForMode(event, 'nearest', { intersect: true }, true)
       if (activePoints.length > 0) {
         const clickedIndex = activePoints[0].index
+        const datasetIndex = activePoints[0].datasetIndex
         const monthLabel = months[clickedIndex]
+        const gender = datasetIndex === 0 ? 'male' : 'female'
         router.push({
           name: 'visit-logs',
-          query: { month: monthLabel.toLowerCase() }
+          query: { month: monthLabel.toLowerCase(), gender }
         })
       }
     }

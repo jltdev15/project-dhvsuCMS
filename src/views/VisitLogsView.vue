@@ -56,6 +56,14 @@
             </button>
           </div>
 
+        <div v-if="displayGender" class="flex items-center gap-2 text-sm bg-[#800000]/10 text-[#800000] px-3 py-2 rounded-lg">
+          <span class="material-icons text-base">filter_alt</span>
+          <span>Gender: <span class="font-semibold">{{ displayGender }}</span></span>
+          <button @click="clearGenderFilter" class="ml-1 text-[#800000] hover:text-[#5a0000]" aria-label="Clear gender filter">
+            <span class="material-icons text-base">close</span>
+          </button>
+        </div>
+
           <div v-if="displayReason" class="flex items-center gap-2 text-sm bg-[#800000]/10 text-[#800000] px-3 py-2 rounded-lg">
             <span class="material-icons text-base">filter_alt</span>
             <span>Reason: <span class="font-semibold">{{ displayReason }}</span></span>
@@ -143,6 +151,8 @@ const router = useRouter()
 const monthQuery = ref<string | null>(null)
 const monthSelector = ref<string>('')
 const reasonQuery = ref<string | null>(null)
+const genderQuery = ref<string | null>(null)
+const patientsById = ref<Record<string, any>>({})
 
 const monthAbbrevs = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec']
 const fullMonthNames = ['January','February','March','April','May','June','July','August','September','October','November','December']
@@ -189,6 +199,12 @@ const displayMonthName = computed(() => {
 })
 
 const displayReason = computed(() => (reasonQuery.value || '').toString())
+const displayGender = computed(() => {
+  const g = (genderQuery.value || '').toString().toLowerCase()
+  if (g === 'male') return 'Male'
+  if (g === 'female') return 'Female'
+  return ''
+})
 
 const clearMonthFilter = () => {
   monthQuery.value = null
@@ -199,6 +215,11 @@ const clearMonthFilter = () => {
 const clearReasonFilter = () => {
   reasonQuery.value = null
   router.push({ name: route.name as string, query: { ...route.query, reason: undefined } })
+}
+
+const clearGenderFilter = () => {
+  genderQuery.value = null
+  router.push({ name: route.name as string, query: { ...route.query, gender: undefined } })
 }
 
 // Filter visits based on month query and search query
@@ -217,10 +238,20 @@ const filteredVisits = computed(() => {
     ? byMonth
     : byMonth.filter(v => (v.reason || '').toString().trim().toLowerCase() === reasonQuery.value!.toLowerCase())
 
-  if (!searchQuery.value) return byReason
+  const genderFilter = (genderQuery.value || '').toString().toLowerCase()
+  const byGender = !genderFilter
+    ? byReason
+    : byReason.filter(v => {
+        const patientId = v.patientId
+        const patient = patientId ? patientsById.value[patientId] : null
+        const g = (patient && patient.gender) ? patient.gender.toString().toLowerCase() : ''
+        return g === genderFilter
+      })
+
+  if (!searchQuery.value) return byGender
 
   const query = searchQuery.value.toLowerCase()
-  return byReason.filter(visit => 
+  return byGender.filter(visit => 
     (visit.patientName && visit.patientName.toLowerCase().includes(query)) ||
     (visit.reason && visit.reason.toLowerCase().includes(query)) ||
     (visit.medicinesDispensed && visit.medicinesDispensed.toLowerCase().includes(query))
@@ -242,10 +273,20 @@ const fetchVisits = () => {
   })
 }
 
+const fetchPatients = () => {
+  const patientsRef = dbRef(db, 'patients')
+  onValue(patientsRef, (snapshot) => {
+    const data = snapshot.val()
+    patientsById.value = data || {}
+  })
+}
+
 onMounted(() => {
   fetchVisits()
+  fetchPatients()
   monthQuery.value = (route.query.month as string) || null
   reasonQuery.value = (route.query.reason as string) || null
+  genderQuery.value = (route.query.gender as string) || null
   monthSelector.value = (route.query.month as string) || ''
 })
 
@@ -256,6 +297,10 @@ watch(() => route.query.month, (newVal) => {
 
 watch(() => route.query.reason, (newVal) => {
   reasonQuery.value = (newVal as string) || null
+})
+
+watch(() => route.query.gender, (newVal) => {
+  genderQuery.value = (newVal as string) || null
 })
 
 // Keep route query in sync when user changes dropdown
